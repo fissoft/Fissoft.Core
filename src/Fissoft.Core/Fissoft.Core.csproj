@@ -9,12 +9,11 @@
     <PackageLicenseUrl>https://github.com/fissoft/Fissoft.Core/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/fissoft/Fissoft.Core</RepositoryUrl>
     <Company>Fissoft</Company>
-    
+    <Version>$version$</Version>
+   
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="QueryableSearcher.cs" />
-  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="System.Diagnostics.Contracts" Version="4.3.0" />
