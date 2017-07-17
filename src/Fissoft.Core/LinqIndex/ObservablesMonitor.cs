@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Specialized;
-using Fissoft.Framework.Systems.Data.Internal;
+using Fissoft.LinqIndex.Internal;
 
-namespace Fissoft.Framework.Systems.Data
+namespace Fissoft.LinqIndex
 {
     public static class ObservablesMonitor
     {

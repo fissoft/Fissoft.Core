@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Fissoft.Framework.Systems.Data.Indexes;
+using Fissoft.LinqIndex.Indexes;
 
-namespace Fissoft.Framework.Systems.Data.Internal
+namespace Fissoft.LinqIndex.Internal
 {
     internal class InternalIndexCollection<T> : IEnumerable<DictionaryHashIndex<T>>
     {

@@ -2,10 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Fissoft.Framework.Systems.Data.Indexes;
-using Fissoft.Framework.Systems.Data.Internal;
+using Fissoft.LinqIndex.Indexes;
+using Fissoft.LinqIndex.Internal;
 
-namespace Fissoft.Framework.Systems.Data
+namespace Fissoft.LinqIndex
 {
 
     /*

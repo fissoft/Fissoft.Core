@@ -1,5 +1,6 @@
 ﻿using System;
-namespace Fissoft.Framework.Systems.Data
+
+namespace Fissoft.LinqIndex
 {
 
     public class ObservableIndexNotFoundException : Exception

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Fissoft.EntitySearch;
+using Fissoft.Transforms;
 using Fissoft.Utils;
 
 namespace Fissoft.Framework.Systems.Data.EntitySearch

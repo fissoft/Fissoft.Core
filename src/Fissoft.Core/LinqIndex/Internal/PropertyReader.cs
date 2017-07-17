@@ -1,8 +1,7 @@
 using System;
 using System.Reflection;
-using System.Globalization;
 
-namespace Fissoft.Framework.Systems.Data.Internal
+namespace Fissoft.LinqIndex.Internal
 {
     internal class PropertyReader<T>
     {

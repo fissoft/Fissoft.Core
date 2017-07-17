@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using Fissoft.Framework.Systems.Data.Indexes;
+using Fissoft.LinqIndex.Indexes;
 
-namespace Fissoft.Framework.Systems.Data.Internal
+namespace Fissoft.LinqIndex.Internal
 {
     internal class ObservableIndexableCollection<TCollection, T> : IIndexableCollection<T>
         where TCollection : class, INotifyCollectionChanged, IEnumerable<T>

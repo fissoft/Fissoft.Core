@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Fissoft.Framework.Systems
+namespace Fissoft
 {
     /// <summary>
     /// �ɷ�ҳ�Ľӿ�

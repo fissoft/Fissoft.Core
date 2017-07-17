@@ -1,4 +1,4 @@
-namespace Fissoft.Framework.Systems.Data
+namespace Fissoft.LinqIndex
 {
     public enum PropertyReadStrategy
     {

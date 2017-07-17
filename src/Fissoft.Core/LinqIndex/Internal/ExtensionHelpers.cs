@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Linq.Expressions;
 using System.Globalization;
+using System.Linq.Expressions;
 
-namespace Fissoft.Framework.Systems.Data.Internal
+namespace Fissoft.LinqIndex.Internal
 {
     internal static class ExtensionHelpers
     {

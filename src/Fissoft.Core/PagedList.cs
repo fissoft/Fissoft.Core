@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using Fissoft.Framework.Systems;
 
-namespace Fissoft.Framework.Systems
+namespace Fissoft
 {
-    using System.ComponentModel;
-
     /// <summary>
     /// 可以对IQueryable或IEnumerable进行分页
     /// </summary>

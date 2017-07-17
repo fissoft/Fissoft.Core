@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Fissoft.Framework.Systems.Data.Indexes
+namespace Fissoft.LinqIndex.Indexes
 {
     public interface IIndexableCollection<T> : IEnumerable<T>
     {

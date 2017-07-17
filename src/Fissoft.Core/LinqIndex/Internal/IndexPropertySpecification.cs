@@ -1,6 +1,6 @@
 using System;
 
-namespace Fissoft.Framework.Systems.Data.Internal
+namespace Fissoft.LinqIndex.Internal
 {
     internal class IndexPropertySpecification
     {

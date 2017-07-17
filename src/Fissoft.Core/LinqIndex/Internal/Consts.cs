@@ -1,4 +1,4 @@
-﻿namespace Fissoft.Framework.Systems.Data.Internal
+﻿namespace Fissoft.LinqIndex.Internal
 {
     internal static class Consts
     {

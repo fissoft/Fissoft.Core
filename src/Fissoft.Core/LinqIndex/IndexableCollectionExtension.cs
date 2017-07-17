@@ -1,13 +1,12 @@
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using Fissoft.Framework.Systems.Data.Indexes;
-using System.ComponentModel;
-using Fissoft.Framework.Systems.Data.Internal;
+using Fissoft.LinqIndex.Indexes;
+using Fissoft.LinqIndex.Internal;
 
-namespace Fissoft.Framework.Systems.Data
+namespace Fissoft.LinqIndex
 {
     public static class IndexableCollectionExtension
     {

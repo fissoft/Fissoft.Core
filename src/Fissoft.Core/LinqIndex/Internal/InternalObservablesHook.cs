@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Specialized;
-using Fissoft.Framework.Systems.Data.Indexes;
+using Fissoft.LinqIndex.Indexes;
 
-namespace Fissoft.Framework.Systems.Data.Internal
+namespace Fissoft.LinqIndex.Internal
 {
     internal static class InternalObservablesHook
     {

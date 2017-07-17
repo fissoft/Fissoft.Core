@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Fissoft.Framework.Systems.Data.Internal;
+using Fissoft.LinqIndex.Internal;
 
-namespace Fissoft.Framework.Systems.Data
+namespace Fissoft.LinqIndex
 {
     public class IndexSpecification<T>
     {
