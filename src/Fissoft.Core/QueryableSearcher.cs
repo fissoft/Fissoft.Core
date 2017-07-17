@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Fissoft.Framework.Systems.Data.EntitySearch
 {
@@ -209,7 +210,7 @@ namespace Fissoft.Framework.Systems.Data.EntitySearch
 
             var elementType = TypeUtil.GetUnNullableType(conversionType);
             object value;
-            if (elementType.BaseType == typeof (Enum))
+            if (elementType.GetTypeInfo().BaseType == typeof (Enum))
             {
                 value = Enum.Parse(elementType, item.Value.ToString());
             }

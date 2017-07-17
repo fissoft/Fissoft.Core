@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 
 namespace Fissoft.Framework.Systems
@@ -9,8 +10,8 @@ namespace Fissoft.Framework.Systems
         public static string GetDisplayName(this PropertyInfo propertyInfo)
         {
             var attrs = propertyInfo.GetCustomAttributes(typeof(DisplayNameAttribute), false);
-            if (attrs != null && attrs.Length > 0)
-                return ((DisplayNameAttribute)attrs[0]).DisplayName;            
+            if (attrs != null && attrs.Count() > 0)
+                return ((DisplayNameAttribute)attrs.FirstOrDefault()).DisplayName;            
             return propertyInfo.Name;
         }
         

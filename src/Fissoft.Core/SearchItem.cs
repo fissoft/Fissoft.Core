@@ -120,7 +120,7 @@ namespace Fissoft.Framework.Systems
                 else if (searchMethod == SearchMethod.LessThan)
                     return sourceDateTime < desDateTime;
             }
-            else if (sourceType.BaseType == typeof(Enum))
+            else if (sourceType.GetTypeInfo().BaseType == typeof(Enum))
             {
                 int sourceValue = (int)source;
 
@@ -139,7 +139,7 @@ namespace Fissoft.Framework.Systems
                     return !desValue.Contains(sourceValue);
                 }
             }
-            else if (sourceType.BaseType == typeof(int))
+            else if (sourceType.GetTypeInfo().BaseType == typeof(int))
             {
                 if (searchMethod == SearchMethod.Equal)
                     return (int)source == (int)des;

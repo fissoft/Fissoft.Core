@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Linq;
 using System.Reflection;
 
@@ -46,7 +45,7 @@ namespace Fissoft.Framework.Systems
         
         public static string FirstSortableProperty(this Type type)
         {
-            PropertyInfo firstSortableProperty = type.GetProperties().Where(property => property.PropertyType.IsPredefinedType()).FirstOrDefault();
+            PropertyInfo firstSortableProperty = type.GetTypeInfo().GetProperties().Where(property => property.PropertyType.IsPredefinedType()).FirstOrDefault();
 
             if (firstSortableProperty == null)
             {
@@ -58,12 +57,12 @@ namespace Fissoft.Framework.Systems
 
         public static bool IsNullableType(this Type type)
         {
-            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+            return type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
 
         public static Type GetNonNullableType(this Type type)
         {
-            return IsNullableType(type) ? type.GetGenericArguments()[0] : type;
+            return IsNullableType(type) ? type.GetTypeInfo().GetGenericArguments()[0] : type;
         }
 
         public static string GetTypeName(this Type type)
@@ -98,7 +97,7 @@ namespace Fissoft.Framework.Systems
             
             type = GetNonNullableType(type);
 
-            if (type.IsEnum)
+            if (type.GetTypeInfo().IsEnum)
             {
                 return 0;
             }
@@ -128,7 +127,7 @@ namespace Fissoft.Framework.Systems
         public static PropertyInfo GetIndexerPropertyInfo(this Type type, params Type[] indexerArguments)
         {
             return
-                (from p in type.GetProperties()
+                (from p in type.GetTypeInfo().GetProperties()
                  where AreArgumentsApplicable(indexerArguments, p.GetIndexParameters())
                  select p).FirstOrDefault();
         }
@@ -156,19 +155,20 @@ namespace Fissoft.Framework.Systems
 
         public static bool IsEnumType(this Type type)
         {
-            return GetNonNullableType(type).IsEnum;
+            return GetNonNullableType(type).GetTypeInfo().IsEnum;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public static bool IsCompatibleWith(this Type source, Type target)
         {
             if (source == target) return true;
-            if (!target.IsValueType) return target.IsAssignableFrom(source);
+            if (!target.GetTypeInfo().IsValueType)
+                return target.GetTypeInfo().IsAssignableFrom(source);
             Type st = source.GetNonNullableType();
             Type tt = target.GetNonNullableType();
             if (st != source && tt == target) return false;
-            TypeCode sc = st.IsEnum ? TypeCode.Object : Type.GetTypeCode(st);
-            TypeCode tc = tt.IsEnum ? TypeCode.Object : Type.GetTypeCode(tt);
+            TypeCode sc = st.GetTypeInfo().IsEnum ? TypeCode.Object : Type.GetTypeCode(st);
+            TypeCode tc = tt.GetTypeInfo().IsEnum ? TypeCode.Object : Type.GetTypeCode(tt);
             switch (sc)
             {
                 case TypeCode.SByte:
@@ -286,18 +286,20 @@ namespace Fissoft.Framework.Systems
 
         public static Type FindGenericType(this Type type, Type genericType)
         {
+            var typeInfo = type.GetTypeInfo();
+            var genericTypeInfo = genericType.GetTypeInfo();
             while (type != null && type != typeof(object))
             {
-                if (type.IsGenericType && type.GetGenericTypeDefinition() == genericType) return type;
-                if (genericType.IsInterface)
+                if (typeInfo.IsGenericType && type.GetGenericTypeDefinition() == genericType) return type;
+                if (genericTypeInfo.IsInterface)
                 {
-                    foreach (Type intfType in type.GetInterfaces())
+                    foreach (Type intfType in typeInfo.GetInterfaces())
                     {
                         Type found = intfType.FindGenericType(genericType);
                         if (found != null) return found;
                     }
                 }
-                type = type.BaseType;
+                type = typeInfo.BaseType;
             }
             return null;
         }
@@ -309,7 +311,7 @@ namespace Fissoft.Framework.Systems
 
         public static object DefaultValue(this Type type)
         {
-            if (type.IsValueType)
+            if (type.GetTypeInfo().IsValueType)
                 return Activator.CreateInstance(type);
             return null;
         }
@@ -332,8 +334,12 @@ namespace Fissoft.Framework.Systems
                 (staticAccess ? BindingFlags.Static : BindingFlags.Instance);
             foreach (Type t in type.SelfAndBaseTypes())
             {
-                MemberInfo[] members = t.FindMembers(MemberTypes.Property | MemberTypes.Field,
-                    flags, Type.FilterNameIgnoreCase, memberName);
+                MemberInfo[] members = t.GetTypeInfo().GetMembers(flags)
+                    .Where(c=>c.Name== memberName).ToArray();
+                // MemberTypes.Property | MemberTypes.Field,
+                //flags,
+                //   Type.FilterNameIgnoreCase,
+                //    memberName
                 if (members.Length != 0) return members[0];
             }
             return null;
@@ -342,7 +348,7 @@ namespace Fissoft.Framework.Systems
 
         public static IEnumerable<Type> SelfAndBaseTypes(this Type type)
         {
-            if (type.IsInterface)
+            if (type.GetTypeInfo().IsInterface)
             {
                 List<Type> types = new List<Type>();
                 AddInterface(types, type);
@@ -356,7 +362,7 @@ namespace Fissoft.Framework.Systems
             while (type != null)
             {
                 yield return type;
-                type = type.BaseType;
+                type = type.GetTypeInfo().BaseType;
             }
         }
 
@@ -365,14 +371,14 @@ namespace Fissoft.Framework.Systems
             if (!types.Contains(type))
             {
                 types.Add(type);
-                foreach (Type t in type.GetInterfaces()) AddInterface(types, t);
+                foreach (Type t in type.GetTypeInfo().GetInterfaces()) AddInterface(types, t);
             }
         }
 
-        public static bool IsDataRow(this Type type)
-        {
-            return type.IsCompatibleWith(typeof(DataRow)) || type.IsCompatibleWith(typeof(DataRowView));
-        }
+        //public static bool IsDataRow(this Type type)
+        //{
+        //    return type.IsCompatibleWith(typeof(DataRow)) || type.IsCompatibleWith(typeof(DataRowView));
+        //}
 
         public static bool IsDynamicObject(this Type type)
         {
@@ -416,7 +422,7 @@ namespace Fissoft.Framework.Systems
                 return "Boolean";
             }
 
-            if (type.IsEnum)
+            if (type.GetTypeInfo().IsEnum)
             {
                 return "Enum";
             }
@@ -424,15 +430,15 @@ namespace Fissoft.Framework.Systems
             return "Object";
         }
 
-        public static bool IsPlainType(this Type type)
-        {
-            return
+        //public static bool IsPlainType(this Type type)
+        //{
+        //    return
 
 
-                !type.IsDynamicObject() &&
+        //        !type.IsDynamicObject() &&
 
-                !type.IsDataRow() &&
-                !(type.IsCompatibleWith(typeof(ICustomTypeDescriptor)));
-        }
+        //        !type.IsDataRow() &&
+        //        !(type.IsCompatibleWith(typeof(ICustomTypeDescriptor)));
+        //}
     }
 }

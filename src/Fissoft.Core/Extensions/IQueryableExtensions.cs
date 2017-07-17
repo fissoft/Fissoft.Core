@@ -1,6 +1,6 @@
 ﻿using Fissoft.Framework.Systems.Common;
 using Fissoft.Framework.Systems.Data.EntitySearch;
-
+using System.Linq.Expressions;
 namespace Fissoft.Framework.Systems
 {
     using System;

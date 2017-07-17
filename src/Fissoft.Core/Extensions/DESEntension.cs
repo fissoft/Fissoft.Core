@@ -10,7 +10,7 @@ namespace Fissoft.Framework.Systems
         /// <summary>
         /// 用于补位的密钥
         /// </summary>
-        private const string Replacecryptorkey = "fissoft112";
+        private const string Replacecryptorkey = "EA16704A";
         /// <summary>
         /// 使用DES加密 chsword 2005-2-12
         /// </summary>
@@ -21,11 +21,14 @@ namespace Fissoft.Framework.Systems
         public static string DESEncrypt(this string originalValue, string key, string iv)
         {
             //将key和IV处理成8个字符
-            key = (key + Replacecryptorkey).Substring(0, 8);
-            iv = (iv + Replacecryptorkey).Substring(0, 8);
+            var key1 =Encoding.UTF8.GetBytes( (key + Replacecryptorkey).Substring(0, 8));
+            var iv1 = Encoding.UTF8.GetBytes((iv + Replacecryptorkey).Substring(0, 8));
+            
             using (SymmetricAlgorithm sa
-                = new DESCryptoServiceProvider {Key = key.ToUtf8Bytes(), IV = iv.ToUtf8Bytes()})
+                = Aes.Create())
             {
+                sa.IV = iv1;
+                sa.Key = key1;
                 using (ICryptoTransform ct = sa.CreateEncryptor())
                 {
                     byte[] byt = originalValue.ToUtf8Bytes();
@@ -64,12 +67,14 @@ namespace Fissoft.Framework.Systems
         {
 
             //将key和IV处理成8个字符
-            key = (key + Replacecryptorkey).Substring(0, 8);
-            iv = (iv + Replacecryptorkey).Substring(0, 8);
+            var key1 = Encoding.UTF8.GetBytes((key + Replacecryptorkey).Substring(0, 8));
+            var iv1 = Encoding.UTF8.GetBytes((iv + Replacecryptorkey).Substring(0, 8));
+        
             using (SymmetricAlgorithm sa =
-                new DESCryptoServiceProvider
-                {Key = Encoding.UTF8.GetBytes(key), IV = Encoding.UTF8.GetBytes(iv)})
+                 Aes.Create())
             {
+                sa.IV = iv1;
+                sa.Key = key1;
                 using (ICryptoTransform ct = sa.CreateDecryptor())
                 {
 

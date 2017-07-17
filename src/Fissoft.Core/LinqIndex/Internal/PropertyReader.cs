@@ -34,7 +34,7 @@ namespace Fissoft.Framework.Systems.Data.Internal
 
             var typeOfT = typeof(T);
 
-            _propertyInfo = typeOfT.GetProperty(propertyName);
+            _propertyInfo = typeOfT.GetTypeInfo().GetProperty(propertyName);
 
             if (_propertyInfo == null)
                 throw new ArgumentException("Could not find property name [{0}] on type [{1}]."

@@ -9,6 +9,7 @@
 namespace Fissoft.Framework.Systems
 {
     using System;
+    using System.Reflection;
 
     /// <summary>
     /// Type类的处理工具类
@@ -22,7 +23,8 @@ namespace Fissoft.Framework.Systems
         /// <returns></returns>
         public static Type GetUnNullableType(Type conversionType)
         {
-            if (conversionType.IsGenericType && conversionType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+            if (conversionType.GetTypeInfo().IsGenericType &&
+                conversionType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
             {
                 //如果是泛型方法，且泛型类型为Nullable<>则视为可空类型
                 //并使用NullableConverter转换器进行转换

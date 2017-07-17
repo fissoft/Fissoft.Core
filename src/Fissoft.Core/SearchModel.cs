@@ -331,7 +331,7 @@ namespace Fissoft.Framework.Systems
             Type modelType = model.GetType();
             foreach (SearchItem item in Items)
             {
-                PropertyInfo info = modelType.GetProperty(item.Field);
+                PropertyInfo info = modelType.GetTypeInfo().GetProperty(item.Field);
                 if (info!=null && !item.IsMatch(info.GetValue(model, null)))
                     return false;
             }

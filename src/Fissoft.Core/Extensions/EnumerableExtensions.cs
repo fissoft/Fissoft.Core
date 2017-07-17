@@ -1,13 +1,13 @@
-﻿
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Linq.Expressions;
+using System;
+using System.Reflection;
+using System.Collections;
+
 namespace Fissoft.Framework.Systems {
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
-    using System.Text;
-    using System.Linq.Expressions;
-    using System;
-    using System.Reflection;
-    using System.Collections;
 
     public static class EnumerableExtensions {
         /// <summary>
@@ -210,7 +210,7 @@ namespace Fissoft.Framework.Systems {
 
         public static IEnumerable<T> Where<T>(this IEnumerable<T> source, SearchItem searchItem)
         {
-            PropertyInfo info = typeof(T).GetProperty(searchItem.Field);
+            PropertyInfo info = typeof(T).GetTypeInfo().GetProperty(searchItem.Field);
             Func<T,bool> func = new Func<T,bool>(delegate(T m)
                 {
                     return searchItem.IsMatch(info.GetValue(m, null));
@@ -232,7 +232,7 @@ namespace Fissoft.Framework.Systems {
         public static Func<T, Tkey> MehodLambda<T, Tkey>(string propertyName)
         {
             ParameterExpression p = Expression.Parameter(typeof(T), "p");
-            Expression body = Expression.Property(p, typeof(T).GetProperty(propertyName));
+            Expression body = Expression.Property(p, typeof(T).GetTypeInfo().GetProperty(propertyName));
             var lambda = Expression.Lambda<Func<T, Tkey>>(body, p);
             return lambda.Compile();
         }
@@ -241,7 +241,7 @@ namespace Fissoft.Framework.Systems {
         {
             if (string.IsNullOrEmpty(propertyStr)) return source;
             ParameterExpression param = Expression.Parameter(typeof(T), "c");
-            PropertyInfo property = typeof(T).GetProperty(propertyStr);
+            PropertyInfo property = typeof(T).GetTypeInfo().GetProperty(propertyStr);
             Expression propertyAccessExpression = Expression.MakeMemberAccess(param, property);
             LambdaExpression le = Expression.Lambda(propertyAccessExpression, param);
             Type type = typeof(T);

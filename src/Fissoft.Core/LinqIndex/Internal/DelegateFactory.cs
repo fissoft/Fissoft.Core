@@ -13,7 +13,7 @@ namespace Fissoft.Framework.Systems.Data.Internal
             if (property == null)
                 throw new ArgumentNullException("property");
 
-            var method = typeof(T).GetMethod("get_" + property.Name, Type.EmptyTypes);
+            var method = typeof(T).GetTypeInfo().GetMethod("get_" + property.Name, Type.EmptyTypes);
 
             return Create(method);
         }

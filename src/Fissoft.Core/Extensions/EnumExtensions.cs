@@ -68,13 +68,13 @@ namespace Fissoft.Framework.Systems
         {
             Contract.Requires(e != null);
             Type type = e.GetType();
-            MemberInfo[] memInfo = type.GetMember(e.ToString());
+            MemberInfo[] memInfo = type.GetTypeInfo().GetMember(e.ToString());
             if (memInfo.Length > 0)
             {
                 var attrs = memInfo[0].GetCustomAttributes(typeof(GlobalCodeAttribute), false);
-                if (attrs.Length > 0)
+                if (attrs.Count() > 0)
                 {
-                    return ((GlobalCodeAttribute)attrs[0]);
+                    return ((GlobalCodeAttribute)attrs.FirstOrDefault());
                 }
             }
             return null;
@@ -104,7 +104,7 @@ namespace Fissoft.Framework.Systems
         public static IList<string> GetNames(this Enum e)
         {
             IList<string> enumNames = new List<string>();
-            foreach (FieldInfo fi in e.GetType().GetFields(BindingFlags.Static | BindingFlags.Public))
+            foreach (FieldInfo fi in e.GetType().GetTypeInfo().GetFields(BindingFlags.Static | BindingFlags.Public))
             {
                 enumNames.Add(fi.Name);
             }
@@ -119,7 +119,7 @@ namespace Fissoft.Framework.Systems
         public static Array GetValues(this Enum e)
         {
             List<int> enumValues = new List<int>();
-            foreach (FieldInfo fi in e.GetType().GetFields(BindingFlags.Static | BindingFlags.Public))
+            foreach (FieldInfo fi in e.GetType().GetTypeInfo().GetFields(BindingFlags.Static | BindingFlags.Public))
             {
                 enumValues.Add((int)Enum.Parse(e.GetType(), fi.Name, false));
             }

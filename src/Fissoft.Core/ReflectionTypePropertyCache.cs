@@ -26,7 +26,7 @@ namespace Fissoft.Framework.Systems.Common
                 {
                     if (!Dict.ContainsKey(name))
                     {
-                        Dict[name] = typeof(TType).GetProperty(name);
+                        Dict[name] = typeof(TType).GetTypeInfo().GetProperty(name);
                     }
                 }
             }
