@@ -1,0 +1,10 @@
+﻿http://msdn.microsoft.com/en-us/magazine/cc507639.aspx
+
+Internal Project TODO's:
+- Automate documentation (chm creation), maybe use Sandcastle? (P.S. Document the API first)
+- Figure out a way to get the TeamCity.CodeBetter build to show up on CodePlex's release pages???
+- Implement Red-Black indexes for IComparable<T> items
+- AsObservable(IndexSpecification<T>...)
+- look into using - PropertyChangedEventManager http://kutruff.wordpress.com/2009/03/06/high-performance-property-changed-weak-event-notifications-for-c/
+    http://www.codeproject.com/Articles/38287/It-s-not-that-hard-to-add-the-missing-bits-to-Silverlight.aspx?display=PrintAll
+    http://www.orktane.com/Blog/post/2009/07/29/TRUE-Weak-Eventing-Listening-for-NETSilverlight.aspx
