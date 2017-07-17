@@ -3,12 +3,18 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
     <RootNamespace>Fissoft</RootNamespace>
+    <Authors>ZouJian</Authors>
+    <Product>Fissoft.Core</Product>
+    <PackageProjectUrl>https://github.com/fissoft/Fissoft.Core</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/fissoft/Fissoft.Core/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/fissoft/Fissoft.Core</RepositoryUrl>
+    <Company>Fissoft</Company>
+    
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="QueryableSearcher.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="System.Diagnostics.Contracts" Version="4.3.0" />
