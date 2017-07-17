@@ -1,0 +1,15 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+configuration: Release
+platform: Any CPU
+before_build:
+- ps: dotnet restore src/Fissoft.Core
+build:
+  publish_nuget: true
+  verbosity: minimal
+before_package:
+- ps: dotnet pack /p:Version="$env:APPVEYOR_BUILD_VERSION"
+after_build:
+- ps: 
+artifacts:
+- path: '**\*.nupkg'
