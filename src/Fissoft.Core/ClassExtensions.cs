@@ -20,13 +20,6 @@ namespace Fissoft
         /// dict.ContainsKey(key)?dict[key]:0
         /// 现在直接为 dict.Get(key)即可
         /// </summary>
-        //static public TResult GetProperty<TKey, TResult>(this IDictionary<TKey, TResult> dict, TKey key)
-        //{
-        //    if (!dict.ContainsKey(key))
-        //        return default(TResult);
-        //    var obj = dict[key];
-        //    return obj;
-        //}
         public static TResult GetProperty<TKey, TResult>(this IReadOnlyDictionary<TKey, TResult> dict, TKey key)
         {
             if (!dict.ContainsKey(key))
