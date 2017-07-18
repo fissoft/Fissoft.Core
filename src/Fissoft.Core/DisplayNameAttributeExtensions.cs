@@ -8,8 +8,8 @@ namespace Fissoft
     {
         public static string GetDisplayName(this PropertyInfo propertyInfo)
         {
-            var attrs = propertyInfo.GetCustomAttributes(typeof(DisplayNameAttribute), false);
-            if (attrs != null && attrs.Count() > 0)
+            var attrs = propertyInfo.GetCustomAttributes(typeof(DisplayNameAttribute), false).ToArray();
+            if (attrs != null && attrs.Any())
                 return ((DisplayNameAttribute)attrs.FirstOrDefault()).DisplayName;            
             return propertyInfo.Name;
         }
