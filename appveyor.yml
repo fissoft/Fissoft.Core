@@ -10,4 +10,4 @@ build:
 before_package:
 - ps: dotnet pack /p:Version="$env:APPVEYOR_BUILD_VERSION"
 artifacts:
-- path: '**\*.nupkg'
+- path: 'src\**\*.nupkg'
