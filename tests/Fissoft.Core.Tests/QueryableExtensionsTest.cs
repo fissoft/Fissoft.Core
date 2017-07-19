@@ -91,7 +91,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void EqualIntAndString_One()
         {
-            var item = new SearchItem {Field = "Id", Method = SearchMethod.Equal, Value = "1"};
+            var item = new SearchItem
+            {
+                Field = "Id", Method = SearchMethod.Equal, Value = "1"
+            };
             var query = _table.AsQueryable();
             var actual = query.Where(item);
             Assert.AreEqual(1, actual.Count());
@@ -100,7 +103,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void PropNotExists()
         {
-            var item = new SearchItem {Field = "Id1", Method = SearchMethod.Equal, Value = "1"};
+            var item = new SearchItem
+            {
+                Field = "Id1", Method = SearchMethod.Equal, Value = "1"
+            };
             var query = _table.AsQueryable();
 
             try
@@ -116,7 +122,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void EqualIntAndInt_One()
         {
-            var item = new SearchItem {Field = "Id", Method = SearchMethod.Equal, Value = 1};
+            var item = new SearchItem
+            {
+                Field = "Id", Method = SearchMethod.Equal, Value = 1
+            };
             var query = _table.AsQueryable();
 
             var actual = query.Where(item);
@@ -126,7 +135,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void LessThan_One()
         {
-            var item = new SearchItem {Field = "Id", Method = SearchMethod.LessThan, Value = "2"};
+            var item = new SearchItem
+            {
+                Field = "Id", Method = SearchMethod.LessThan, Value = "2"
+            };
             var query = _table.AsQueryable();
 
             var actual = query.Where(item);
@@ -136,7 +148,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void LessThanOrEqual_Two()
         {
-            var item = new SearchItem {Field = "Id", Method = SearchMethod.LessThanOrEqual, Value = "2"};
+            var item = new SearchItem
+            {
+                Field = "Id", Method = SearchMethod.LessThanOrEqual, Value = "2"
+            };
             var query = _table.AsQueryable();
 
             var actual = query.Where(item);
@@ -146,7 +161,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void Like_One()
         {
-            var item = new SearchItem {Field = "Name", Method = SearchMethod.Like, Value = "*lanc*"};
+            var item = new SearchItem
+            {
+                Field = "Name", Method = SearchMethod.Like, Value = "*lanc*"
+            };
             var query = _table.AsQueryable();
 
             var actual = query.Where(item);
@@ -157,7 +175,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void NotLike_One()
         {
-            var item = new SearchItem {Field = "Name", Method = SearchMethod.NotContains, Value = "lanc"};
+            var item = new SearchItem
+            {
+                Field = "Name", Method = SearchMethod.NotContains, Value = "lanc"
+            };
             var query = _table.AsQueryable();
 
             var actual = query.Where(item);
@@ -168,7 +189,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void EqualNullable_One()
         {
-            var item = new SearchItem {Field = "Age", Method = SearchMethod.Equal, Value = "10"};
+            var item = new SearchItem
+            {
+                Field = "Age", Method = SearchMethod.Equal, Value = "10"
+            };
             var query = _table.AsQueryable();
 
             var actual = query.Where(item);
@@ -179,7 +203,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void EqualInputIsDateTime_One()
         {
-            var item = new SearchItem {Field = "Time", Method = SearchMethod.Equal, Value = "2010-09-01"};
+            var item = new SearchItem
+            {
+                Field = "Time", Method = SearchMethod.Equal, Value = "2010-09-01"
+            };
             var query = _table.AsQueryable();
 
             var actual = query.Where(item);
@@ -201,7 +228,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void Equal_1_One()
         {
-            var item = new SearchItem {Field = "AddTime", Method = SearchMethod.Equal, Value = "-1111111"};
+            var item = new SearchItem
+            {
+                Field = "AddTime", Method = SearchMethod.Equal, Value = "-1111111"
+            };
             var query = _table.AsQueryable();
 
             var actual = query.Where(item);
@@ -211,7 +241,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void In()
         {
-            var item = new SearchItem {Field = "Id", Method = SearchMethod.In, Value = new[] {1, 2, 3}};
+            var item = new SearchItem
+            {
+                Field = "Id", Method = SearchMethod.In, Value = new[] {1, 2, 3}
+            };
             var query = _table.AsQueryable();
 
             var actual = query.Where(item);
@@ -221,7 +254,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void NotIn()
         {
-            var item = new SearchItem {Field = "Id", Method = SearchMethod.NotIn, Value = "2,3"};
+            var item = new SearchItem
+            {
+                Field = "Id", Method = SearchMethod.NotIn, Value = "2,3"
+            };
             var query = _table.AsQueryable();
 
             var actual = query.Where(item);
@@ -231,7 +267,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void InParamIsString()
         {
-            var item = new SearchItem {Field = "Id", Method = SearchMethod.In, Value = new[] {"1", "2"}};
+            var item = new SearchItem
+            {
+                Field = "Id", Method = SearchMethod.In, Value = new[] {"1", "2"}
+            };
             var query = _table.AsQueryable();
 
             var actual = query.Where(item);
@@ -241,7 +280,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void InString_Two()
         {
-            var item = new SearchItem {Field = "Name", Method = SearchMethod.In, Value = new[] {"attach", "chsword"}};
+            var item = new SearchItem
+            {
+                Field = "Name", Method = SearchMethod.In, Value = new[] {"attach", "chsword"}
+            };
             var query = _table.AsQueryable();
 
             var actual = query.Where(item);
@@ -251,7 +293,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void InNull_Two()
         {
-            var item = new SearchItem {Field = "CanNull", Method = SearchMethod.In, Value = new[] {"1", "2"}};
+            var item = new SearchItem
+            {
+                Field = "CanNull", Method = SearchMethod.In, Value = new[] {"1", "2"}
+            };
             var query = _table.AsQueryable();
             var actual = query.Where(item);
             Assert.AreEqual(2, actual.Count());
@@ -260,7 +305,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void InNullToIsNull_Two()
         {
-            var item = new SearchItem {Field = "CanNull", Method = SearchMethod.In, Value = new int?[] {1, 2}};
+            var item = new SearchItem
+            {
+                Field = "CanNull", Method = SearchMethod.In, Value = new int?[] {1, 2}
+            };
             var query = _table.AsQueryable();
             var actual = query.Where(item);
             Assert.AreEqual(2, actual.Count());
@@ -269,7 +317,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void IntToIsNull_Two()
         {
-            var item = new SearchItem {Field = "CanNull", Method = SearchMethod.In, Value = new[] {1, 2}};
+            var item = new SearchItem
+            {
+                Field = "CanNull", Method = SearchMethod.In, Value = new[] {1, 2}
+            };
             var query = _table.AsQueryable();
             var actual = query.Where(item);
             Assert.AreEqual(2, actual.Count());
@@ -278,7 +329,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void NotEqual_Two()
         {
-            var item = new SearchItem {Field = "Id", Method = SearchMethod.NotEqual, Value = 1};
+            var item = new SearchItem
+            {
+                Field = "Id", Method = SearchMethod.NotEqual, Value = 1
+            };
             var query = _table.AsQueryable();
             var actual = query.Where(item);
             Assert.AreEqual(2, actual.Count());
@@ -287,8 +341,14 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void OrEqual_Two()
         {
-            var item1 = new SearchItem {Field = "Id", Method = SearchMethod.Equal, Value = 1, OrGroup = "a"};
-            var item2 = new SearchItem {Field = "Id", Method = SearchMethod.Equal, Value = 2, OrGroup = "a"};
+            var item1 = new SearchItem
+            {
+                Field = "Id", Method = SearchMethod.Equal, Value = 1, OrGroup = "a"
+            };
+            var item2 = new SearchItem
+            {
+                Field = "Id", Method = SearchMethod.Equal, Value = 2, OrGroup = "a"
+            };
 
             var model = new SearchModel {Items = new[] {item1, item2}.ToList()};
             var query = _table.AsQueryable();
@@ -299,9 +359,18 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void AndOrMix_One()
         {
-            var item1 = new SearchItem {Field = "Id", Method = SearchMethod.Equal, Value = 1, OrGroup = "a"};
-            var item2 = new SearchItem {Field = "Id", Method = SearchMethod.Equal, Value = 2, OrGroup = "a"};
-            var item3 = new SearchItem {Field = "Id", Method = SearchMethod.Equal, Value = 3};
+            var item1 = new SearchItem
+            {
+                Field = "Id", Method = SearchMethod.Equal, Value = 1, OrGroup = "a"
+            };
+            var item2 = new SearchItem
+            {
+                Field = "Id", Method = SearchMethod.Equal, Value = 2, OrGroup = "a"
+            };
+            var item3 = new SearchItem
+            {
+                Field = "Id", Method = SearchMethod.Equal, Value = 3
+            };
             var sm = new SearchModel();
             sm.Items.AddRange(new[] {item1, item2, item3});
 
@@ -313,10 +382,22 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void TwoGroup_One()
         {
-            var item1 = new SearchItem {Field = "Id", Method = SearchMethod.Equal, Value = 1, OrGroup = "a"};
-            var item2 = new SearchItem {Field = "Id", Method = SearchMethod.Equal, Value = 2, OrGroup = "a"};
-            var item3 = new SearchItem {Field = "Id", Method = SearchMethod.Equal, Value = 2, OrGroup = "b"};
-            var item4 = new SearchItem {Field = "Id", Method = SearchMethod.Equal, Value = 3, OrGroup = "b"};
+            var item1 = new SearchItem
+            {
+                Field = "Id", Method = SearchMethod.Equal, Value = 1, OrGroup = "a"
+            };
+            var item2 = new SearchItem
+            {
+                Field = "Id", Method = SearchMethod.Equal, Value = 2, OrGroup = "a"
+            };
+            var item3 = new SearchItem
+            {
+                Field = "Id", Method = SearchMethod.Equal, Value = 2, OrGroup = "b"
+            };
+            var item4 = new SearchItem
+            {
+                Field = "Id", Method = SearchMethod.Equal, Value = 3, OrGroup = "b"
+            };
             var sm = new SearchModel();
             sm.Items.AddRange(new[] {item1, item2, item3, item4});
 
@@ -328,7 +409,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void Equal2Level()
         {
-            var item = new SearchItem {Field = "Class.Id", Method = SearchMethod.Equal, Value = "11"};
+            var item = new SearchItem
+            {
+                Field = "Class.Id", Method = SearchMethod.Equal, Value = "11"
+            };
             var query = _table.AsQueryable();
 
             var actual = query.Where(item);
@@ -338,7 +422,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void Equal3Level()
         {
-            var item = new SearchItem {Field = "Class.Class.Id", Method = SearchMethod.Equal, Value = "111"};
+            var item = new SearchItem
+            {
+                Field = "Class.Class.Id", Method = SearchMethod.Equal, Value = "111"
+            };
             var query = _table.AsQueryable();
 
             var actual = query.Where(item);
@@ -358,7 +445,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void NullString()
         {
-            var item1 = new SearchItem {Field = "NullString", Method = SearchMethod.Contains, Value = 1, OrGroup = "a"};
+            var item1 = new SearchItem
+            {
+                Field = "NullString", Method = SearchMethod.Contains, Value = 1, OrGroup = "a"
+            };
             var query = _table.AsQueryable();
             var actual = query.Where(item1);
             Assert.AreEqual(0, actual.Count());
@@ -368,7 +458,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void EnumTest()
         {
-            var item1 = new SearchItem {Field = "MyEnum", Method = SearchMethod.Equal, Value = "Public"};
+            var item1 = new SearchItem
+            {
+                Field = "MyEnum", Method = SearchMethod.Equal, Value = "Public"
+            };
             var query = _table.AsQueryable();
             var actual = query.Where(item1);
             Assert.AreEqual(2, actual.Count());
@@ -377,7 +470,10 @@ namespace Fissoft.Core.Tests
         [TestMethod]
         public void EnumAbleNullTest()
         {
-            var item1 = new SearchItem {Field = "NMyEnum", Method = SearchMethod.Equal, Value = "Public"};
+            var item1 = new SearchItem
+            {
+                Field = "NMyEnum", Method = SearchMethod.Equal, Value = "Public"
+            };
             var query = _table.AsQueryable();
             var actual = query.Where(item1);
             Assert.AreEqual(2, actual.Count());
