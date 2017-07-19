@@ -12,7 +12,7 @@ namespace Fissoft.Core.Tests
             Assert.AreEqual("Enum2", TestEnum.Enum2.GetDescription());
         }
 
-        enum TestEnum
+        private enum TestEnum
         {
             [System.ComponentModel.Description("MyName")] Enum1,
             Enum2

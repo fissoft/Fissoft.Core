@@ -14,7 +14,7 @@ namespace Fissoft.Core.Tests
             Assert.AreEqual("MyName", propertyInfo.GetDisplayName());
         }
 
-        class TestModel
+        private class TestModel
         {
             [DisplayName("MyName")]
             public string Name { get; set; }
