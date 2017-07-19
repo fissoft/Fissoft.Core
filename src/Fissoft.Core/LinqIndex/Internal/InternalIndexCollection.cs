@@ -7,7 +7,8 @@ namespace Fissoft.LinqIndex.Internal
 {
     internal class InternalIndexCollection<T> : IEnumerable<DictionaryHashIndex<T>>
     {
-        private readonly Dictionary<string, DictionaryHashIndex<T>> _internalIndexList = new Dictionary<string, DictionaryHashIndex<T>>();
+        private readonly Dictionary<string, DictionaryHashIndex<T>> _internalIndexList =
+            new Dictionary<string, DictionaryHashIndex<T>>();
 
         public IEnumerator<DictionaryHashIndex<T>> GetEnumerator()
         {
@@ -27,9 +28,7 @@ namespace Fissoft.LinqIndex.Internal
         public bool RemoveIndex(string propertyName)
         {
             if (_internalIndexList.ContainsKey(propertyName))
-            {
                 return _internalIndexList.Remove(propertyName);
-            }
             return false;
         }
 

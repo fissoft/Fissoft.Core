@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 namespace Fissoft
 {
-    static public class LinqExtensions
+    public static class LinqExtensions
     {
         /// <summary>
-        /// 存在 List&lt;T&gt;.ForEach但是其它的IEnumerable不存在ForEach方法
+        ///     存在 List&lt;T&gt;.ForEach但是其它的IEnumerable不存在ForEach方法
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="enumeration"></param>
@@ -18,8 +18,9 @@ namespace Fissoft
                 foreach (var item in enumeration)
                     action(item);
         }
+
         /// <summary>
-        /// 存在 List&lt;T&gt;.ForEach但是其它的IEnumerable不存在ForEach方法
+        ///     存在 List&lt;T&gt;.ForEach但是其它的IEnumerable不存在ForEach方法
         /// </summary>
         /// <param name="enumeration"></param>
         /// <param name="action"></param>
@@ -29,6 +30,5 @@ namespace Fissoft
                 foreach (var item in enumeration)
                     action(item);
         }
-
     }
 }

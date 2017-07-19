@@ -10,26 +10,36 @@ using Fissoft.Framework.Systems.Data.EntitySearch;
 namespace Fissoft
 {
     /// <summary>
-    ///   Linq IQueryable 扩展
+    ///     Linq IQueryable 扩展
     /// </summary>
     public static class IQueryableExtensions
     {
+        #region Obsolete
+
+        [Obsolete("请使用Where方法，并设置SearchItem的OrGroup", true)]
+        public static IQueryable<TEntity> WhereOr<TEntity>(IQueryable<TEntity> ret, IEnumerable<SearchItem> entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
         #region OrderBy
 
         /// <summary>
-        ///   扩展OrderBy方法，使之支持字符串
-        ///   Ganji.Framework.Systems.IQueryableExtensions
-        ///   支持多字段组合排序，如
-        ///   OrderBy("P1,P2")
-        ///   OrderBy("P1,P2","desc")
-        ///   OrderBy("P1,P2",",desc")
-        ///   OrderBy("P1,P2","desc,asc")
-        ///   OrderBy("P1,P2","asc,asc")
+        ///     扩展OrderBy方法，使之支持字符串
+        ///     Ganji.Framework.Systems.IQueryableExtensions
+        ///     支持多字段组合排序，如
+        ///     OrderBy("P1,P2")
+        ///     OrderBy("P1,P2","desc")
+        ///     OrderBy("P1,P2",",desc")
+        ///     OrderBy("P1,P2","desc,asc")
+        ///     OrderBy("P1,P2","asc,asc")
         /// </summary>
-        /// <typeparam name = "T"></typeparam>
-        /// <param name = "query"></param>
-        /// <param name = "sortName"></param>
-        /// <param name = "sortOrder"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="sortName"></param>
+        /// <param name="sortOrder"></param>
         /// <returns></returns>
         public static IQueryable<T> OrderBy<T>(this IQueryable<T> query, string sortName, string sortOrder)
         {
@@ -37,7 +47,7 @@ namespace Fissoft
             var retQuery = query;
             var propGroup = sortName.Split(',');
 
-            for (int k = 0; k < propGroup.Length; k++)
+            for (var k = 0; k < propGroup.Length; k++)
             {
                 var typeOfProp = typeof(T);
                 var sortField = propGroup[k];
@@ -49,7 +59,8 @@ namespace Fissoft
                 do
                 {
                     var property = ReflectionTypePropertyCache<T>.GetProperty(props[i]);
-                    if (property == null) throw new Exception("OrderBy方法,可能位于Where(SearchModel)中，或不到所指定的属性:" + sortName);
+                    if (property == null)
+                        throw new Exception("OrderBy方法,可能位于Where(SearchModel)中，或不到所指定的属性:" + sortName);
                     typeOfProp = property.PropertyType;
                     propertyAccess = Expression.MakeMemberAccess(propertyAccess, property);
                     i++;
@@ -57,10 +68,10 @@ namespace Fissoft
 
                 var orderByExp = Expression.Lambda(propertyAccess, param);
                 var resultExp = Expression.Call(typeof(Queryable),
-                        currentOrder,
-                        new[] { typeof(T), typeOfProp },
-                        retQuery.Expression,
-                        Expression.Quote(orderByExp));
+                    currentOrder,
+                    new[] {typeof(T), typeOfProp},
+                    retQuery.Expression,
+                    Expression.Quote(orderByExp));
                 retQuery = retQuery.Provider.CreateQuery<T>(resultExp);
             }
             return retQuery;
@@ -90,20 +101,22 @@ namespace Fissoft
             if (orderArr[index].ToLower() == "desc") return DescVar;
             return AscVar;
         }
+
         #endregion
 
         #region Where in
 
         /// <summary>
-        ///   使之支持Sql in语法
+        ///     使之支持Sql in语法
         /// </summary>
-        /// <typeparam name = "T"></typeparam>
-        /// <typeparam name = "TValue"></typeparam>
-        /// <param name = "query"></param>
-        /// <param name = "obj"></param>
-        /// <param name = "values"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="obj"></param>
+        /// <param name="values"></param>
         /// <returns></returns>
-        public static IQueryable<T> WhereIn<T, TValue>(this IQueryable<T> query, Expression<Func<T, TValue>> obj, IEnumerable<TValue> values)
+        public static IQueryable<T> WhereIn<T, TValue>(this IQueryable<T> query, Expression<Func<T, TValue>> obj,
+            IEnumerable<TValue> values)
         {
             return query.Where(BuildContainsExpression(obj, values));
         }
@@ -112,17 +125,15 @@ namespace Fissoft
             Expression<Func<TElement, TValue>> valueSelector, IEnumerable<TValue> values)
         {
             if (null == valueSelector)
-            {
                 throw new ArgumentNullException("valueSelector");
-            }
             if (null == values)
-            {
                 throw new ArgumentNullException("values");
-            }
             var p = valueSelector.Parameters.Single();
             if (!values.Any()) return e => false;
 
-            var equals = values.Select(value => (Expression) Expression.Equal(valueSelector.Body, Expression.Constant(value, typeof (TValue))));
+            var equals =
+                values.Select(value => (Expression) Expression.Equal(valueSelector.Body,
+                    Expression.Constant(value, typeof(TValue))));
             var body = equals.Aggregate(Expression.Or);
             return Expression.Lambda<Func<TElement, bool>>(body, p);
         }
@@ -132,30 +143,29 @@ namespace Fissoft
         #region Where
 
         /// <summary>
-        ///   zoujian add , 使IQueryable支持SearchModel
+        ///     zoujian add , 使IQueryable支持SearchModel
         /// </summary>
-        /// <typeparam name = "TEntity"></typeparam>
-        /// <param name = "table">IQueryable的查询对象</param>
-        /// <param name = "model">SearchModel对象</param>
-        /// <param name = "prefix">使用前缀区分查询条件</param>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="table">IQueryable的查询对象</param>
+        /// <param name="model">SearchModel对象</param>
+        /// <param name="prefix">使用前缀区分查询条件</param>
         /// <returns></returns>
-        public static IQueryable<TEntity> Where<TEntity>(this IQueryable<TEntity> table, SearchModel model, string prefix = "") where TEntity : class
+        public static IQueryable<TEntity> Where<TEntity>(this IQueryable<TEntity> table, SearchModel model,
+            string prefix = "") where TEntity : class
         {
             Contract.Requires(table != null);
-            if(!string.IsNullOrEmpty(prefix))
-            {
+            if (!string.IsNullOrEmpty(prefix))
                 return new QueryableSearcher<TEntity>(table, model.Items.Where(c => c.Prefix == prefix)).Search();
-            }
-            return new QueryableSearcher<TEntity>(table, model.Items.Where(c => string.IsNullOrEmpty(c.Prefix))).Search();
-
+            return new QueryableSearcher<TEntity>(table, model.Items.Where(c => string.IsNullOrEmpty(c.Prefix)))
+                .Search();
         }
 
         /// <summary>
-        ///   支持SearchItem查询
+        ///     支持SearchItem查询
         /// </summary>
-        /// <typeparam name = "TEntity"></typeparam>
-        /// <param name = "table">IQueryable的查询对象</param>
-        /// <param name = "item">SearchItem</param>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="table">IQueryable的查询对象</param>
+        /// <param name="item">SearchItem</param>
         /// <returns></returns>
         public static IQueryable<TEntity> Where<TEntity>(this IQueryable<TEntity> table, SearchItem item)
         {
@@ -165,28 +175,18 @@ namespace Fissoft
         }
 
         /// <summary>
-        ///   支持对IQueryable通过字符串指定属性的查询
+        ///     支持对IQueryable通过字符串指定属性的查询
         /// </summary>
-        /// <typeparam name = "TEntity"></typeparam>
-        /// <param name = "table">IQueryable的查询对象</param>
-        /// <param name = "field">属性名</param>
-        /// <param name = "method">判断谓词</param>
-        /// <param name = "value">值</param>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="table">IQueryable的查询对象</param>
+        /// <param name="field">属性名</param>
+        /// <param name="method">判断谓词</param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         public static IQueryable<TEntity> Where<TEntity>(this IQueryable<TEntity> table, string field,
-                                                         SearchMethod method, object value)
+            SearchMethod method, object value)
         {
             return table.Where(new SearchItem {Field = field, Method = method, Value = value});
-        }
-
-        #endregion
-
-        #region Obsolete
-
-        [Obsolete("请使用Where方法，并设置SearchItem的OrGroup", true)]
-        public static IQueryable<TEntity> WhereOr<TEntity>(IQueryable<TEntity> ret, IEnumerable<SearchItem> entity)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

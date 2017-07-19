@@ -2,7 +2,6 @@
 
 namespace Fissoft.LinqIndex
 {
-
     public class ObservableIndexNotFoundException : Exception
     {
         public ObservableIndexNotFoundException()
@@ -19,5 +18,4 @@ namespace Fissoft.LinqIndex
         {
         }
     }
-
 }

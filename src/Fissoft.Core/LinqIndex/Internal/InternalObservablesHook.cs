@@ -21,13 +21,14 @@ namespace Fissoft.LinqIndex.Internal
             ItemsMonitoring.Remove(collectoin);
         }
 
-        public static bool TryGetIndexForObservable<T>(object collection, out IIndexableCollection<T> indexableCollection)
+        public static bool TryGetIndexForObservable<T>(object collection,
+            out IIndexableCollection<T> indexableCollection)
         {
             object o;
 
             if (ItemsMonitoring.TryGetValue(collection, out o))
             {
-                indexableCollection = (IIndexableCollection<T>)o;
+                indexableCollection = (IIndexableCollection<T>) o;
 
                 return true;
             }
@@ -48,5 +49,3 @@ namespace Fissoft.LinqIndex.Internal
         }
     }
 }
-
-

@@ -1,10 +1,10 @@
-﻿using Fissoft.Framework.Systems.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Fissoft.EntitySearch;
+using Fissoft.Framework.Systems.Common;
 using Fissoft.Transforms;
 using Fissoft.Utils;
 
@@ -12,6 +12,8 @@ namespace Fissoft.Framework.Systems.Data.EntitySearch
 {
     internal class QueryableSearcher<T>
     {
+        private QueryProviderType _queryProviderType = QueryProviderType.Unknow;
+
         public QueryableSearcher()
         {
             Init();
@@ -28,21 +30,6 @@ namespace Fissoft.Framework.Systems.Data.EntitySearch
         protected IEnumerable<SearchItem> Items { get; set; }
 
         protected IQueryable<T> Table { get; set; }
-
-        private void Init()
-        {
-            //初始化默认转换器
-            TransformProviders = new List<ITransformProvider>
-                                     {
-                                         new LikeTransformProvider(),
-                                         new DateBlockTransformProvider(),
-                                         new InTransformProvider(),
-                                         //new UnixTimeTransformProvider(),
-                                         new NotInTransformProvider()
-                                     };
-        }
-
-        private QueryProviderType _queryProviderType = QueryProviderType.Unknow;
 
         private QueryProviderType ProviderType
         {
@@ -61,14 +48,27 @@ namespace Fissoft.Framework.Systems.Data.EntitySearch
             }
         }
 
+        private void Init()
+        {
+            //初始化默认转换器
+            TransformProviders = new List<ITransformProvider>
+            {
+                new LikeTransformProvider(),
+                new DateBlockTransformProvider(),
+                new InTransformProvider(),
+                //new UnixTimeTransformProvider(),
+                new NotInTransformProvider()
+            };
+        }
+
         public IQueryable<T> Search()
         {
             var param = Expression.Parameter(typeof(T), "c"); //c=>
             //获取lambda表达式方法体
             var body = GetAllExpression(param, Items);
             if (body == null) return Table;
-        
-            return Queryable.Where(Table, Expression.Lambda<Func<T, bool>>(body, param));
+
+            return Table.Where(Expression.Lambda<Func<T, bool>>(body, param));
         }
 
         //获取整个方法体
@@ -78,22 +78,19 @@ namespace Fissoft.Framework.Systems.Data.EntitySearch
             //先处理无OrGroup的数据并使用And逻辑拼接
             var andList = items.Where(c => string.IsNullOrEmpty(c.OrGroup));
             if (andList.Count() != 0)
-            {
                 list.Add(GetGroupExpression(param, andList, Expression.AndAlso));
-            }
             //处理有OrGroup的条件，并按OrGroup分组后使用OR拼接
             var orGroupByList = items.Where(c => !string.IsNullOrEmpty(c.OrGroup)).GroupBy(c => c.OrGroup);
             foreach (var group in orGroupByList)
-            {
                 if (group.Count() != 0)
                     list.Add(GetGroupExpression(param, group, Expression.OrElse));
-            }
             if (list.Count == 0) return null;
             return list.Aggregate(Expression.AndAlso);
         }
 
         //按照func的规则联合 各个表达式
-        private Expression GetGroupExpression(ParameterExpression param, IEnumerable<SearchItem> items, Func<Expression, Expression, Expression> func)
+        private Expression GetGroupExpression(ParameterExpression param, IEnumerable<SearchItem> items,
+            Func<Expression, Expression, Expression> func)
         {
             var list = items.Select(item => GetExpression(param, item));
             return list.Aggregate(func);
@@ -105,12 +102,8 @@ namespace Fissoft.Framework.Systems.Data.EntitySearch
             //属性表达式
             var exp = GetPropertyLambdaExpression(item, param);
             foreach (var provider in TransformProviders)
-            {
                 if (provider.Match(item, exp.Body.Type))
-                {
                     return GetGroupExpression(param, provider.Transform(item, exp.Body.Type), Expression.AndAlso);
-                }
-            }
             //常量表达式
             var constant = ChangeTypeToExpression(item, exp.Body.Type);
             //使用已有谓词关联
@@ -123,19 +116,11 @@ namespace Fissoft.Framework.Systems.Data.EntitySearch
         {
             var providerType = ProviderType;
             if (providerType == QueryProviderType.EnumerableQuery)
-            {
                 if (EnumerableExpressionDict.ContainsKey(method))
-                {
                     return EnumerableExpressionDict[method];
-                }
-            }
             if (providerType == QueryProviderType.DbQueryProvider)
-            {
                 if (DbExpressionDict.ContainsKey(method))
-                {
                     return DbExpressionDict[method];
-                }
-            }
             return CommonExpressionDict[method];
         }
 
@@ -151,12 +136,10 @@ namespace Fissoft.Framework.Systems.Data.EntitySearch
             {
                 var property = ReflectionTypePropertyCache<T>.GetProperty(props[i]);
                 if (property == null)
-                {
                     throw new Exception(
                         string.Format("{0}中的属性{1}不存在，所以不能用于查询，请检查查询条件",
-                                      typeof(T), props[i]
-                            ));
-                }
+                            typeof(T), props[i]
+                        ));
                 typeOfProp = property.PropertyType;
                 propertyAccess = Expression.MakeMemberAccess(propertyAccess, property);
                 i++;
@@ -168,10 +151,10 @@ namespace Fissoft.Framework.Systems.Data.EntitySearch
         #region ChangeType
 
         /// <summary>
-        ///   类型转换，支持非空类型与可空类型之间的转换
+        ///     类型转换，支持非空类型与可空类型之间的转换
         /// </summary>
-        /// <param name = "value"></param>
-        /// <param name = "conversionType"></param>
+        /// <param name="value"></param>
+        /// <param name="conversionType"></param>
         /// <returns></returns>
         public static object ChangeType(object value, Type conversionType)
         {
@@ -180,10 +163,10 @@ namespace Fissoft.Framework.Systems.Data.EntitySearch
         }
 
         /// <summary>
-        ///   转换SearchItem中的Value的类型，为表达式树
+        ///     转换SearchItem中的Value的类型，为表达式树
         /// </summary>
-        /// <param name = "item"></param>
-        /// <param name = "conversionType">目标类型</param>
+        /// <param name="item"></param>
+        /// <param name="conversionType">目标类型</param>
         public static Expression ChangeTypeToExpression(SearchItem item, Type conversionType)
         {
             if (item.Value == null) return Expression.Constant(item.Value, conversionType);
@@ -193,18 +176,16 @@ namespace Fissoft.Framework.Systems.Data.EntitySearch
             //if (item.Method == SearchMethod.StdIn)
             if (item.Value is Array)
             {
-                var arr = (item.Value as Array);
+                var arr = item.Value as Array;
                 var expList = new List<Expression>();
                 //确保可用
                 if (arr != null)
-                {
                     for (var i = 0; i < arr.Length; i++)
                     {
                         //构造数组的单元Constant
                         var newValue = ChangeType(arr.GetValue(i), conversionType);
                         expList.Add(Expression.Constant(newValue, conversionType));
                     }
-                }
                 //构造inType类型的数组表达式树，并为数组赋初值
                 return Expression.NewArrayInit(conversionType, expList);
             }
@@ -213,15 +194,11 @@ namespace Fissoft.Framework.Systems.Data.EntitySearch
 
             var elementType = TypeUtil.GetUnNullableType(conversionType);
             object value;
-            if (elementType.GetTypeInfo().BaseType == typeof (Enum))
-            {
+            if (elementType.GetTypeInfo().BaseType == typeof(Enum))
                 value = Enum.Parse(elementType, item.Value.ToString());
-            }
             else
-            {
                 value =
                     Convert.ChangeType(item.Value, elementType);
-            }
             return Expression.Constant(value, conversionType);
         }
 
@@ -232,167 +209,174 @@ namespace Fissoft.Framework.Systems.Data.EntitySearch
         private static readonly Dictionary<SearchMethod, Func<Expression, Expression, Expression>>
             EnumerableExpressionDict =
                 new Dictionary<SearchMethod, Func<Expression, Expression, Expression>>
+                {
                     {
+                        SearchMethod.Contains,
+                        (left, right) =>
                         {
-                            SearchMethod.Contains,
-                            (left, right) =>
-                                {
-                                    if (left.Type != typeof (string)) return null;
-                                    return Expression.Condition(
-                                        Expression.Equal(left, Expression.Constant(null)),
-                                        Expression.Call(Expression.Constant(string.Empty),
-                                                        ReflectionStringMethodCache.Contains, right),
-                                        Expression.Call(left, ReflectionStringMethodCache.Contains, right)
-                                        );
-                                }
+                            if (left.Type != typeof(string)) return null;
+                            return Expression.Condition(
+                                Expression.Equal(left, Expression.Constant(null)),
+                                Expression.Call(Expression.Constant(string.Empty),
+                                    ReflectionStringMethodCache.Contains, right),
+                                Expression.Call(left, ReflectionStringMethodCache.Contains, right)
+                            );
                         }
-                    };
+                    }
+                };
 
 
         private static readonly Dictionary<SearchMethod, Func<Expression, Expression, Expression>>
             DbExpressionDict =
-                new Dictionary<SearchMethod, Func<Expression, Expression, Expression>>
-                {
+                new Dictionary<SearchMethod, Func<Expression, Expression, Expression>>();
 
-                };
-        private static readonly Dictionary<SearchMethod, Func<Expression, Expression, Expression>> CommonExpressionDict =
+        private static readonly Dictionary<SearchMethod, Func<Expression, Expression, Expression>> CommonExpressionDict
+            =
             new Dictionary<SearchMethod, Func<Expression, Expression, Expression>>
+            {
                 {
+                    SearchMethod.Equal,
+                    (left, right) => { return Expression.Equal(left, right); }
+                },
+                {
+                    SearchMethod.GreaterThan,
+                    (left, right) => { return Expression.GreaterThan(left, right); }
+                },
+                {
+                    SearchMethod.GreaterThanOrEqual,
+                    (left, right) => { return Expression.GreaterThanOrEqual(left, right); }
+                },
+                {
+                    SearchMethod.LessThan,
+                    (left, right) => { return Expression.LessThan(left, right); }
+                },
+                {
+                    SearchMethod.LessThanOrEqual,
+                    (left, right) => { return Expression.LessThanOrEqual(left, right); }
+                },
+                {
+                    SearchMethod.Contains,
+                    (left, right) =>
                     {
-                        SearchMethod.Equal,
-                        (left, right) => { return Expression.Equal(left, right); }
-                        },
+                        if (left.Type != typeof(string)) return null;
+                        return Expression.Call(left, ReflectionStringMethodCache.Contains, right);
+                    }
+                },
+                {
+                    SearchMethod.StdIn,
+                    (left, right) =>
                     {
-                        SearchMethod.GreaterThan,
-                        (left, right) => { return Expression.GreaterThan(left, right); }
-                        },
-                    {
-                        SearchMethod.GreaterThanOrEqual,
-                        (left, right) => { return Expression.GreaterThanOrEqual(left, right); }
-                        },
-                    {
-                        SearchMethod.LessThan,
-                        (left, right) => { return Expression.LessThan(left, right); }
-                        },
-                    {
-                        SearchMethod.LessThanOrEqual,
-                        (left, right) => { return Expression.LessThanOrEqual(left, right); }
-                        },
-                    {
-                        SearchMethod.Contains,
-                        (left, right) =>
-                            {
-                                if (left.Type != typeof (string)) return null;
-                                return Expression.Call(left, ReflectionStringMethodCache.Contains, right);
-                            }
-                        },
-                    {
-                        SearchMethod.StdIn,
-                        (left, right) =>
-                            {
-                                if (!right.Type.IsArray) return null;
-                                //调用Enumerable.Contains扩展方法
-                                var resultExp =
-                                    Expression.Call(
-                                        typeof (Enumerable),
-                                        "Contains",
-                                        new[] {left.Type},
-                                        right,
-                                        left);
+                        if (!right.Type.IsArray) return null;
+                        //调用Enumerable.Contains扩展方法
+                        var resultExp =
+                            Expression.Call(
+                                typeof(Enumerable),
+                                "Contains",
+                                new[] {left.Type},
+                                right,
+                                left);
 
-                                return resultExp;
-                            }
-                        }, 
-                           {
-                        SearchMethod.NotContains,
-                        (left, right) =>
-                            {
-                                if (left.Type != typeof (string)) return null;
-                                var resultExp = Expression.Call(left, ReflectionStringMethodCache.Contains, right);
+                        return resultExp;
+                    }
+                },
+                {
+                    SearchMethod.NotContains,
+                    (left, right) =>
+                    {
+                        if (left.Type != typeof(string)) return null;
+                        var resultExp = Expression.Call(left, ReflectionStringMethodCache.Contains, right);
 
-                                return Expression.Not(resultExp);
-                            }
-                        }, 
-                        
+                        return Expression.Not(resultExp);
+                    }
+                },
+
+                {
+                    SearchMethod.StdNotIn,
+                    (left, right) =>
+                    {
+                        if (!right.Type.IsArray) return null;
+                        //调用Enumerable.Contains扩展方法
+                        var resultExp =
+                            Expression.Call(
+                                typeof(Enumerable),
+                                "Contains",
+                                new[] {left.Type},
+                                right,
+                                left);
+                        return Expression.Not(resultExp);
+                    }
+                },
+                {
+                    SearchMethod.NotEqual,
+                    (left, right) => { return Expression.NotEqual(left, right); }
+                },
+                {
+                    SearchMethod.StartsWith,
+                    (left, right) =>
+                    {
+                        if (left.Type != typeof(string)) return null;
+                        return Expression.Call(left, ReflectionStringMethodCache.StartsWith, right);
+                    }
+                },
+                {
+                    SearchMethod.EndsWith,
+                    (left, right) =>
+                    {
+                        if (left.Type != typeof(string)) return null;
+                        return Expression.Call(left, ReflectionStringMethodCache.EndsWith, right);
+                    }
+                },
+                {
+                    SearchMethod.DateTimeLessThanOrEqual,
+                    (left, right) => { return Expression.LessThanOrEqual(left, right); }
+                },
+                {
+                    SearchMethod.IsNull,
+                    (left, right) =>
+                    {
+                        if (right is ConstantExpression)
                         {
-                               SearchMethod.StdNotIn,
-                               (left, right) =>
-                                   {
-                                       if (!right.Type.IsArray) return null;
-                                       //调用Enumerable.Contains扩展方法
-                                       var resultExp =
-                                           Expression.Call(
-                                               typeof (Enumerable),
-                                               "Contains",
-                                               new[] {left.Type},
-                                               right,
-                                               left);
-                                       return Expression.Not(resultExp);
-                                   }
-                               },
+                            var rightCon = right as ConstantExpression;
+                            var rightConValue = rightCon.Value == null ? string.Empty : rightCon.Value.ToString();
+                            if (rightConValue == "True" || rightConValue == "true" || rightConValue == "1")
+                                return Expression.Equal(left, Expression.Constant(null));
+                            return Expression.NotEqual(left, Expression.Constant(null));
+                        }
+                        var resultExp = Expression.Or(
+                            Expression.Or(Expression.Equal(right, Expression.Constant("True")),
+                                Expression.Equal(right, Expression.Constant("1"))),
+                            Expression.Equal(right, Expression.Constant("true")));
+                        return Expression.Condition(resultExp,
+                            Expression.Equal(left, Expression.Constant(null)),
+                            Expression.NotEqual(left, Expression.Constant(null)));
+                    }
+                },
+                {
+                    SearchMethod.IsNullOrEmpty,
+                    (left, right) =>
                     {
-                        SearchMethod.NotEqual,
-                        (left, right) => { return Expression.NotEqual(left, right); }
-                        },
-                    {
-                        SearchMethod.StartsWith,
-                        (left, right) =>
-                            {
-                                if (left.Type != typeof (string)) return null;
-                                return Expression.Call(left, ReflectionStringMethodCache.StartsWith, right);
-                            }
-                        },
-                    {
-                        SearchMethod.EndsWith,
-                        (left, right) =>
-                            {
-                                if (left.Type != typeof (string)) return null;
-                                return Expression.Call(left, ReflectionStringMethodCache.EndsWith, right);
-                            }
-                        },
-                    {
-                        SearchMethod.DateTimeLessThanOrEqual,
-                        (left, right) => { return Expression.LessThanOrEqual(left, right); }
-  },
-                    {
-                        SearchMethod.IsNull,
-                        (left, right) => {
-                            if(right is System.Linq.Expressions.ConstantExpression)
-                            {
-                                ConstantExpression rightCon = right as ConstantExpression;
-                                string rightConValue = rightCon.Value==null? string.Empty: rightCon.Value.ToString();
-                                if( rightConValue=="True" || rightConValue=="true" || rightConValue=="1")
-                                    return Expression.Equal(left, Expression.Constant(null));
-                                else
-                                    return Expression.NotEqual(left, Expression.Constant(null));
-                            }
-                            var resultExp = Expression.Or(Expression.Or(Expression.Equal(right, Expression.Constant("True")), Expression.Equal(right, Expression.Constant("1"))),
-                                Expression.Equal(right, Expression.Constant("true")));
-                            return Expression.Condition(resultExp,
-                                Expression.Equal(left,Expression.Constant(null)), 
-                                Expression.NotEqual(left,Expression.Constant(null)));
-                            }
-                        },
-                    {
-                        SearchMethod.IsNullOrEmpty,
-                        (left, right) => {
-                            if (right is System.Linq.Expressions.ConstantExpression)
-                            {
-                                ConstantExpression rightCon = right as ConstantExpression;
-                                string rightConValue = rightCon.Value==null? string.Empty: rightCon.Value.ToString();
-                                if (rightConValue == "True" || rightConValue == "true" || rightConValue == "1")
-                                    return Expression.Or(Expression.Equal(left, Expression.Constant(null)), Expression.Equal(left, Expression.Constant("")));
-                                else
-                                    return Expression.And(Expression.NotEqual(left, Expression.Constant(null)), Expression.NotEqual(left, Expression.Constant("")));
-                            }
-                            var resultExp = Expression.Or(Expression.Or(Expression.Equal(right, Expression.Constant("True")), Expression.Equal(right, Expression.Constant("1"))),
-                                Expression.Equal(right, Expression.Constant("true")));
-                            return Expression.Condition(resultExp,
-                                Expression.Or(Expression.Equal(left, Expression.Constant(null)), Expression.Equal(left, Expression.Constant(""))),
-                                Expression.And(Expression.NotEqual(left, Expression.Constant(null)), Expression.NotEqual(left, Expression.Constant(""))));
-                            }               
-                            }
-                };
+                        if (right is ConstantExpression)
+                        {
+                            var rightCon = right as ConstantExpression;
+                            var rightConValue = rightCon.Value == null ? string.Empty : rightCon.Value.ToString();
+                            if (rightConValue == "True" || rightConValue == "true" || rightConValue == "1")
+                                return Expression.Or(Expression.Equal(left, Expression.Constant(null)),
+                                    Expression.Equal(left, Expression.Constant("")));
+                            return Expression.And(Expression.NotEqual(left, Expression.Constant(null)),
+                                Expression.NotEqual(left, Expression.Constant("")));
+                        }
+                        var resultExp = Expression.Or(
+                            Expression.Or(Expression.Equal(right, Expression.Constant("True")),
+                                Expression.Equal(right, Expression.Constant("1"))),
+                            Expression.Equal(right, Expression.Constant("true")));
+                        return Expression.Condition(resultExp,
+                            Expression.Or(Expression.Equal(left, Expression.Constant(null)),
+                                Expression.Equal(left, Expression.Constant(""))),
+                            Expression.And(Expression.NotEqual(left, Expression.Constant(null)),
+                                Expression.NotEqual(left, Expression.Constant(""))));
+                    }
+                }
+            };
 
         #endregion
     }

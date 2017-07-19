@@ -3,7 +3,7 @@
 namespace Fissoft
 {
     /// <summary>
-    /// �ɷ�ҳ�Ľӿ�
+    ///     �ɷ�ҳ�Ľӿ�
     /// </summary>
     public interface IPagedList : IEnumerable
     {

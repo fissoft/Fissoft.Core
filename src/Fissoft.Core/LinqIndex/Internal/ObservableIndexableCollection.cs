@@ -10,8 +10,8 @@ namespace Fissoft.LinqIndex.Internal
     internal class ObservableIndexableCollection<TCollection, T> : IIndexableCollection<T>
         where TCollection : class, INotifyCollectionChanged, IEnumerable<T>
     {
-        private readonly TCollection _items;
         private readonly IndexSpecification<T> _indexSpecification;
+        private readonly TCollection _items;
 
         private IndexableCollection<T> _internalIndexableCollection = new IndexableCollection<T>();
 
@@ -36,18 +36,35 @@ namespace Fissoft.LinqIndex.Internal
             items.CollectionChanged += OnItemsCollectionChanged;
         }
 
-        static void SaveListActionWrapper(IList listToWorkWith, Action<T> actionToTake)
+        public IIndex<T> GetIndexByPropertyName(string propertyName)
+        {
+            return _internalIndexableCollection.GetIndexByPropertyName(propertyName);
+        }
+
+        public bool ContainsIndex(string propertyName)
+        {
+            return _internalIndexableCollection.ContainsIndex(propertyName);
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return _internalIndexableCollection.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        private static void SaveListActionWrapper(IList listToWorkWith, Action<T> actionToTake)
         {
             if (listToWorkWith != null)
                 foreach (var item in listToWorkWith.Cast<T>())
-                {
                     actionToTake(item);
-                }
         }
 
-        void OnItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OnItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 SaveListActionWrapper(e.NewItems, _internalIndexableCollection.Add);
@@ -69,26 +86,6 @@ namespace Fissoft.LinqIndex.Internal
             //{
             //    //No action should be needed on a move as nothing is removed or added...
             //}
-        }
-
-        public IIndex<T> GetIndexByPropertyName(string propertyName)
-        {
-            return _internalIndexableCollection.GetIndexByPropertyName(propertyName);
-        }
-
-        public bool ContainsIndex(string propertyName)
-        {
-            return _internalIndexableCollection.ContainsIndex(propertyName);
-        }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            return _internalIndexableCollection.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }

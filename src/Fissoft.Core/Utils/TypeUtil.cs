@@ -7,17 +7,18 @@
 //-----------------------------------------------------------------------
 
 using System;
+using System.ComponentModel;
 using System.Reflection;
 
 namespace Fissoft.Utils
 {
     /// <summary>
-    /// Type类的处理工具类
+    ///     Type类的处理工具类
     /// </summary>
     public class TypeUtil
     {
         /// <summary>
-        /// 获取可空类型的实际类型
+        ///     获取可空类型的实际类型
         /// </summary>
         /// <param name="conversionType"></param>
         /// <returns></returns>
@@ -28,7 +29,7 @@ namespace Fissoft.Utils
             {
                 //如果是泛型方法，且泛型类型为Nullable<>则视为可空类型
                 //并使用NullableConverter转换器进行转换
-                var nullableConverter = new System.ComponentModel.NullableConverter(conversionType);
+                var nullableConverter = new NullableConverter(conversionType);
                 conversionType = nullableConverter.UnderlyingType;
             }
             return conversionType;

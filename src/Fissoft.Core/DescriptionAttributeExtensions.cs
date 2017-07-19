@@ -14,9 +14,7 @@ namespace Fissoft
             if (memInfo == null || memInfo.Length <= 0) return e.ToString();
             var attrs = memInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false).ToArray();
             if (attrs != null && attrs.Any())
-            {
-                return ((DescriptionAttribute)attrs.FirstOrDefault()).Description;
-            }
+                return ((DescriptionAttribute) attrs.FirstOrDefault()).Description;
             return e.ToString();
         }
     }

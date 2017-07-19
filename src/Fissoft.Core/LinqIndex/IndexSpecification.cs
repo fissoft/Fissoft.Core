@@ -15,17 +15,11 @@ namespace Fissoft.LinqIndex
             _indexedPropertiesConfiguration = new List<IndexPropertySpecification>();
         }
 
-        internal IList<IndexPropertySpecification> IndexedPropertiesConfiguration
-        {
-            get { return _indexedPropertiesConfiguration; }
-        }
+        internal IList<IndexPropertySpecification> IndexedPropertiesConfiguration => _indexedPropertiesConfiguration;
 
         public IEnumerable<string> IndexedProperties
         {
-            get
-            {
-                return _indexedPropertiesConfiguration.Select(s => s.PropertyName);
-            }
+            get { return _indexedPropertiesConfiguration.Select(s => s.PropertyName); }
         }
 
         public IndexSpecification<T> Add<TProperty>(Expression<Func<T, TProperty>> propertyExpressions)
@@ -33,7 +27,8 @@ namespace Fissoft.LinqIndex
             return Add(propertyExpressions, Consts.DefaultPropertyReadStrategy);
         }
 
-        public IndexSpecification<T> Add<TProperty>(Expression<Func<T, TProperty>> propertyExpressions, PropertyReadStrategy propertyReadStrategy)
+        public IndexSpecification<T> Add<TProperty>(Expression<Func<T, TProperty>> propertyExpressions,
+            PropertyReadStrategy propertyReadStrategy)
         {
             var propertyName = propertyExpressions.GetMemberName();
             return Add(new IndexPropertySpecification(propertyName, propertyReadStrategy));

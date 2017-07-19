@@ -7,7 +7,6 @@ using Fissoft.LinqIndex.Internal;
 
 namespace Fissoft.LinqIndex
 {
-
     /*
      * TODO: Notes next version...
      * 
@@ -17,8 +16,8 @@ namespace Fissoft.LinqIndex
 
     public class IndexableCollection<T> : IList<T>, IIndexableCollection<T>
     {
-        private readonly List<T> _internalList = new List<T>();
         private readonly InternalIndexCollection<T> _indexs = new InternalIndexCollection<T>();
+        private readonly List<T> _internalList = new List<T>();
 
 
         public IndexableCollection()
@@ -33,7 +32,8 @@ namespace Fissoft.LinqIndex
 
         public IndexableCollection(IndexSpecification<T> indexSpecification)
             : this(new List<T>(), indexSpecification)
-        { }
+        {
+        }
 
         public IndexableCollection(IEnumerable<T> items, IndexSpecification<T> indexSpecification)
         {
@@ -49,12 +49,55 @@ namespace Fissoft.LinqIndex
                 Add(item);
         }
 
+        public bool ContainsIndex(string propertyName)
+        {
+            return _indexs.ContainsIndex(propertyName);
+        }
+
+        public IIndex<T> GetIndexByPropertyName(string propertyName)
+        {
+            return _indexs.GetIndexByPropertyName(propertyName);
+        }
+
+        public void Add(T item)
+        {
+            AddItemToIndexes(item);
+
+            _internalList.Add(item);
+        }
+
+        public bool Remove(T item)
+        {
+            RemoveItemFromIndexes(item);
+
+            return _internalList.Remove(item);
+        }
+
+        #region IEnumerable<T> Members
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return _internalList.GetEnumerator();
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable) _internalList).GetEnumerator();
+        }
+
+        #endregion
+
         public IndexableCollection<T> CreateIndexFor<TParameter>(Expression<Func<T, TParameter>> propertyExpression)
         {
             return CreateIndexFor(propertyExpression, Consts.DefaultPropertyReadStrategy);
         }
 
-        public IndexableCollection<T> CreateIndexFor<TParameter>(Expression<Func<T, TParameter>> propertyExpression, PropertyReadStrategy propertyReadStrategy)
+        public IndexableCollection<T> CreateIndexFor<TParameter>(Expression<Func<T, TParameter>> propertyExpression,
+            PropertyReadStrategy propertyReadStrategy)
         {
             var propertyName = propertyExpression.GetMemberName();
             var propertyConfiguration = new IndexPropertySpecification(propertyName, propertyReadStrategy);
@@ -77,25 +120,6 @@ namespace Fissoft.LinqIndex
             return ContainsIndex(propertyExpression.GetMemberName());
         }
 
-        public bool ContainsIndex(string propertyName)
-        {
-            return _indexs.ContainsIndex(propertyName);
-        }
-
-        public void Add(T item)
-        {
-            AddItemToIndexes(item);
-
-            _internalList.Add(item);
-        }
-
-        public bool Remove(T item)
-        {
-            RemoveItemFromIndexes(item);
-
-            return _internalList.Remove(item);
-        }
-
 
         public IndexableCollection<T> UseIndexSpecification(IndexSpecification<T> indexSpecification)
         {
@@ -105,9 +129,7 @@ namespace Fissoft.LinqIndex
             _indexs.Clear();
 
             foreach (var property in indexSpecification.IndexedPropertiesConfiguration)
-            {
                 CreateIndexFor(property);
-            }
 
             return this;
         }
@@ -121,8 +143,20 @@ namespace Fissoft.LinqIndex
             return this;
         }
 
-        #region ICollection<T> Members
 
+        private void AddItemToIndexes(T item)
+        {
+            foreach (var index in _indexs)
+                index.AddToIndex(item);
+        }
+
+        private void RemoveItemFromIndexes(T item)
+        {
+            foreach (var index in _indexs)
+                index.RemoveFromIndex(item);
+        }
+
+        #region ICollection<T> Members
 
         public void Clear()
         {
@@ -140,33 +174,9 @@ namespace Fissoft.LinqIndex
             _internalList.CopyTo(array, arrayIndex);
         }
 
-        public int Count
-        {
-            get { return _internalList.Count; }
-        }
+        public int Count => _internalList.Count;
 
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
-
-        #endregion
-
-        #region IEnumerable<T> Members
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            return _internalList.GetEnumerator();
-        }
-
-        #endregion
-
-        #region IEnumerable Members
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)_internalList).GetEnumerator();
-        }
+        public bool IsReadOnly => false;
 
         #endregion
 
@@ -193,10 +203,7 @@ namespace Fissoft.LinqIndex
 
         public T this[int index]
         {
-            get
-            {
-                return _internalList[index];
-            }
+            get => _internalList[index];
             set
             {
                 RemoveItemFromIndexes(_internalList[index]);
@@ -204,28 +211,7 @@ namespace Fissoft.LinqIndex
                 AddItemToIndexes(_internalList[index]);
             }
         }
+
         #endregion
-
-
-        private void AddItemToIndexes(T item)
-        {
-            foreach (var index in _indexs)
-            {
-                index.AddToIndex(item);
-            }
-        }
-
-        private void RemoveItemFromIndexes(T item)
-        {
-            foreach (var index in _indexs)
-            {
-                index.RemoveFromIndex(item);
-            }
-        }
-
-        public IIndex<T> GetIndexByPropertyName(string propertyName)
-        {
-            return _indexs.GetIndexByPropertyName(propertyName);
-        }
     }
 }

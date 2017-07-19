@@ -4,6 +4,7 @@ namespace Fissoft.Framework.Systems.Data.EntitySearch
     {
         EnumerableQuery = 1,
         DbQueryProvider = 2,
+
         Unknow = 0
         //System.Data.Entity.Internal.Linq.DbQueryProvider
     }

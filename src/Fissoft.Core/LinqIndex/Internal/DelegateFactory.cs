@@ -20,13 +20,13 @@ namespace Fissoft.LinqIndex.Internal
 
         private static LateBoundProperty Create(MethodInfo method)
         {
-            ParameterExpression instanceParameter = Expression.Parameter(typeof(object), "target");
+            var instanceParameter = Expression.Parameter(typeof(object), "target");
 
-            MethodCallExpression call = Expression.Call(
+            var call = Expression.Call(
                 Expression.Convert(instanceParameter, method.DeclaringType),
                 method);
 
-            Expression<LateBoundProperty> lambda = Expression.Lambda<LateBoundProperty>(
+            var lambda = Expression.Lambda<LateBoundProperty>(
                 Expression.Convert(call, typeof(object)),
                 instanceParameter);
 

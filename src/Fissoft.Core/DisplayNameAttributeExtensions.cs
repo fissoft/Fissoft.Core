@@ -10,9 +10,8 @@ namespace Fissoft
         {
             var attrs = propertyInfo.GetCustomAttributes(typeof(DisplayNameAttribute), false).ToArray();
             if (attrs != null && attrs.Any())
-                return ((DisplayNameAttribute)attrs.FirstOrDefault()).DisplayName;            
+                return ((DisplayNameAttribute) attrs.FirstOrDefault()).DisplayName;
             return propertyInfo.Name;
         }
-        
     }
 }

@@ -18,10 +18,11 @@ namespace Fissoft.LinqIndex.Internal
             PropertyReadStrategy = propertyReadStrategy;
         }
 
-        public string PropertyName { get; private set; }
-        public PropertyReadStrategy PropertyReadStrategy { get; private set; }
+        public string PropertyName { get; }
+        public PropertyReadStrategy PropertyReadStrategy { get; }
 
         #region Equals & operator ==
+
         public bool Equals(IndexPropertySpecification other)
         {
             if (ReferenceEquals(null, other)) return false;
@@ -34,26 +35,24 @@ namespace Fissoft.LinqIndex.Internal
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != typeof(IndexPropertySpecification)) return false;
-            return Equals((IndexPropertySpecification)obj);
+            return Equals((IndexPropertySpecification) obj);
         }
 
         public override int GetHashCode()
         {
-            return (PropertyName != null ? PropertyName.GetHashCode() : 0);
+            return PropertyName != null ? PropertyName.GetHashCode() : 0;
         }
 
         public static bool operator ==(IndexPropertySpecification a, IndexPropertySpecification b)
         {
-            if (((object)a == null) && ((object)b == null))
+            if ((object) a == null && (object) b == null)
             {
                 Console.WriteLine("x");
                 return true;
             }
 
-            if (((object)a == null) || ((object)b == null))
-            {
+            if ((object) a == null || (object) b == null)
                 return false;
-            }
 
             return a.PropertyName == b.PropertyName;
         }
@@ -62,6 +61,7 @@ namespace Fissoft.LinqIndex.Internal
         {
             return !(a == b);
         }
+
         #endregion
     }
 }

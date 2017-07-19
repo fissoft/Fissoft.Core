@@ -8,19 +8,20 @@ namespace Fissoft.LinqIndex.Indexes
 {
     internal class DictionaryHashIndex<T> : IIndex<T>
     {
-        protected Dictionary<T, int> WhichIndexIsTIn = new Dictionary<T, int>();
+        protected readonly PropertyReader<T> PropertyReader;
 
         protected Dictionary<int, List<T>> IndexItems = new Dictionary<int, List<T>>();
-        protected readonly PropertyReader<T> PropertyReader;
-        public IEnumerable<int> Keys { get { return IndexItems.Keys; } }
+        protected Dictionary<T, int> WhichIndexIsTIn = new Dictionary<T, int>();
 
         public DictionaryHashIndex(string propertyName, IEnumerable<T> items)
             : this(new IndexPropertySpecification(propertyName), items)
-        { }
+        {
+        }
 
         public DictionaryHashIndex(IndexPropertySpecification indexPropertySpecification)
             : this(indexPropertySpecification, new List<T>())
-        { }
+        {
+        }
 
         public DictionaryHashIndex(IndexPropertySpecification indexPropertySpecification, IEnumerable<T> items)
         {
@@ -33,51 +34,10 @@ namespace Fissoft.LinqIndex.Indexes
             PropertyReader = new PropertyReader<T>(indexPropertySpecification);
 
             foreach (var item in items)
-            {
                 AddToIndexInternal(item);
-            }
         }
 
-        public virtual void AddToIndex(T item)
-        {
-            AddToIndexInternal(item);
-        }
-
-        private void AddToIndexInternal(T item)
-        {
-            int hashCode = PropertyReader.GetItemHashCode(item);
-
-            List<T> newItemsIndex;
-
-            if (IndexItems.TryGetValue(hashCode, out newItemsIndex))
-                newItemsIndex.Add(item);
-            else
-                IndexItems.Add(hashCode, new List<T> { item });
-
-            if (!WhichIndexIsTIn.ContainsKey(item))
-                WhichIndexIsTIn.Add(item, hashCode);
-        }
-
-        public virtual void RemoveFromIndex(T item)
-        {
-            RemoveFromIndexInternal(item);
-        }
-
-        private void RemoveFromIndexInternal(T item)
-        {
-            int foundHashCode;
-            if(WhichIndexIsTIn.TryGetValue(item, out foundHashCode))
-            {
-                List<T> convertedIndexFound = IndexItems[foundHashCode];
-
-                convertedIndexFound.Remove(item);
-
-                if (convertedIndexFound.Count != 0)
-                    return;
-
-                IndexItems.Remove(foundHashCode);
-            }
-        }
+        public IEnumerable<int> Keys => IndexItems.Keys;
 
         public bool TryGetItemsForKey(int key, out List<T> list)
         {
@@ -103,6 +63,47 @@ namespace Fissoft.LinqIndex.Indexes
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public virtual void AddToIndex(T item)
+        {
+            AddToIndexInternal(item);
+        }
+
+        private void AddToIndexInternal(T item)
+        {
+            var hashCode = PropertyReader.GetItemHashCode(item);
+
+            List<T> newItemsIndex;
+
+            if (IndexItems.TryGetValue(hashCode, out newItemsIndex))
+                newItemsIndex.Add(item);
+            else
+                IndexItems.Add(hashCode, new List<T> {item});
+
+            if (!WhichIndexIsTIn.ContainsKey(item))
+                WhichIndexIsTIn.Add(item, hashCode);
+        }
+
+        public virtual void RemoveFromIndex(T item)
+        {
+            RemoveFromIndexInternal(item);
+        }
+
+        private void RemoveFromIndexInternal(T item)
+        {
+            int foundHashCode;
+            if (WhichIndexIsTIn.TryGetValue(item, out foundHashCode))
+            {
+                var convertedIndexFound = IndexItems[foundHashCode];
+
+                convertedIndexFound.Remove(item);
+
+                if (convertedIndexFound.Count != 0)
+                    return;
+
+                IndexItems.Remove(foundHashCode);
+            }
         }
     }
 }

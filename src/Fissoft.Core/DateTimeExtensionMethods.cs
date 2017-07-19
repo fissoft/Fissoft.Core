@@ -11,22 +11,22 @@ namespace Fissoft
         }
 
         /// <summary>
-        /// Returns a nicely formatted duration
-        /// eg. 3 seconds ago, 4 hours ago etc.
+        ///     Returns a nicely formatted duration
+        ///     eg. 3 seconds ago, 4 hours ago etc.
         /// </summary>
         /// <param name="dateTime">The datetime value</param>
         /// <returns>A nicely formatted duration</returns>
-        /// <see cref="http://samscode.com/index.php/2009/12/timespan-or-datetime-to-friendly-duration-text-e-g-3-days-ago/"/>
+        /// <see cref="http://samscode.com/index.php/2009/12/timespan-or-datetime-to-friendly-duration-text-e-g-3-days-ago/" />
         public static string TimeAgoString(this DateTime dateTime)
         {
-            StringBuilder sb = new StringBuilder();
-            TimeSpan timespan = DateTime.Now - dateTime;
+            var sb = new StringBuilder();
+            var timespan = DateTime.Now - dateTime;
 
             // A year or more?  Do "[Y] years and [M] months ago"
-            if ((int)timespan.TotalDays >= 365)
+            if ((int) timespan.TotalDays >= 365)
             {
                 // Years
-                int nYears = (int)timespan.TotalDays / 365;
+                var nYears = (int) timespan.TotalDays / 365;
                 sb.Append(nYears);
                 if (nYears > 1)
                     sb.Append(" 年");
@@ -34,24 +34,24 @@ namespace Fissoft
                     sb.Append(" 年");
 
                 // Months
-                int remainingDays = (int)timespan.TotalDays - (nYears * 365);
-                int nMonths = remainingDays / 30;
+                var remainingDays = (int) timespan.TotalDays - nYears * 365;
+                var nMonths = remainingDays / 30;
                 if (nMonths == 1)
                     sb.Append(" ").Append(nMonths).Append(" 个月");
                 else if (nMonths > 1)
                     sb.Append(" ").Append(nMonths).Append(" 个月");
             }
             // More than 60 days? (appx 2 months or 8 weeks)
-            else if ((int)timespan.TotalDays >= 60)
+            else if ((int) timespan.TotalDays >= 60)
             {
                 // Do months
-                int nMonths = (int)timespan.TotalDays / 30;
+                var nMonths = (int) timespan.TotalDays / 30;
                 sb.Append(nMonths).Append(" 个月");
             }
             // Weeks? (7 days or more)
-            else if ((int)timespan.TotalDays >= 7)
+            else if ((int) timespan.TotalDays >= 7)
             {
-                int nWeeks = (int)timespan.TotalDays / 7;
+                var nWeeks = (int) timespan.TotalDays / 7;
                 sb.Append(nWeeks);
                 if (nWeeks == 1)
                     sb.Append(" 周");
@@ -59,9 +59,9 @@ namespace Fissoft
                     sb.Append(" 周");
             }
             // Days? (1 or more)
-            else if ((int)timespan.TotalDays >= 1)
+            else if ((int) timespan.TotalDays >= 1)
             {
-                int nDays = (int)timespan.TotalDays;
+                var nDays = (int) timespan.TotalDays;
                 sb.Append(nDays);
                 if (nDays == 1)
                     sb.Append(" 天");
@@ -69,9 +69,9 @@ namespace Fissoft
                     sb.Append(" 天");
             }
             // Hours?
-            else if ((int)timespan.TotalHours >= 1)
+            else if ((int) timespan.TotalHours >= 1)
             {
-                int nHours = (int)timespan.TotalHours;
+                var nHours = (int) timespan.TotalHours;
                 sb.Append(nHours);
                 if (nHours == 1)
                     sb.Append(" 小时");
@@ -79,9 +79,9 @@ namespace Fissoft
                     sb.Append(" 小时");
             }
             // Minutes?
-            else if ((int)timespan.TotalMinutes >= 1)
+            else if ((int) timespan.TotalMinutes >= 1)
             {
-                int nMinutes = (int)timespan.TotalMinutes;
+                var nMinutes = (int) timespan.TotalMinutes;
                 sb.Append(nMinutes);
                 if (nMinutes == 1)
                     sb.Append(" 分钟");
@@ -89,9 +89,9 @@ namespace Fissoft
                     sb.Append(" 分钟");
             }
             // Seconds?
-            else if ((int)timespan.TotalSeconds >= 1)
+            else if ((int) timespan.TotalSeconds >= 1)
             {
-                int nSeconds = (int)timespan.TotalSeconds;
+                var nSeconds = (int) timespan.TotalSeconds;
                 sb.Append(nSeconds);
                 if (nSeconds == 1)
                     sb.Append(" 秒");
@@ -107,54 +107,52 @@ namespace Fissoft
             sb.Append(" 前");
 
             // For anything more than 6 months back, put " ([Month] [Year])" at the end, for better reference
-            if ((int)timespan.TotalDays >= 30 * 6)
-            {
+            if ((int) timespan.TotalDays >= 30 * 6)
                 sb.Append(" (" + dateTime.ToString("MMMM") + " " + dateTime.Year + ")");
-            }
 
             return sb.ToString();
         }
 
-        ///   <summary>   
-        ///   得指定日期的指定格式间隔
-        ///   </summary>   
-        ///   <param   name="dt1">日期1</param>   
-        ///   <param   name="dt2">日期2</param>   
-        ///   <param   name="dateformat">间隔格式: y:年 M:月 d:天 h:小时 m:分钟 s:秒 fff:毫秒 ffffff:微妙 fffffff:100毫微妙</param>   
-        ///   <returns>间隔   long型</returns>   
+        /// <summary>
+        ///     得指定日期的指定格式间隔
+        /// </summary>
+        /// <param name="dt1">日期1</param>
+        /// <param name="dt2">日期2</param>
+        /// <param name="dateformat">间隔格式: y:年 M:月 d:天 h:小时 m:分钟 s:秒 fff:毫秒 ffffff:微妙 fffffff:100毫微妙</param>
+        /// <returns>间隔   long型</returns>
         public static long GetInterval(this DateTime dt1, DateTime dt2, string dateformat)
         {
             try
             {
-                long interval = dt1.Ticks - dt2.Ticks;
+                var interval = dt1.Ticks - dt2.Ticks;
                 DateTime dt11;
                 DateTime dt22;
 
                 switch (dateformat)
                 {
-                    case "fffffff"://100毫微妙   
+                    case "fffffff": //100毫微妙   
                         break;
-                    case "ffffff"://微妙   
+                    case "ffffff": //微妙   
                         interval /= 10;
                         break;
-                    case "fff"://毫秒   
+                    case "fff": //毫秒   
                         interval /= 10000;
                         break;
-                    case "s"://秒   
+                    case "s": //秒   
                         interval /= 10000000;
                         break;
-                    case "m"://分钟   
+                    case "m": //分钟   
                         interval /= 600000000;
                         break;
-                    case "h"://小时   
+                    case "h": //小时   
                         interval /= 36000000000;
                         break;
-                    case "d"://天   
+                    case "d": //天   
                         interval /= 864000000000;
                         break;
-                    case "M"://月   
-                        dt11 = (dt1.CompareTo(dt2) >= 0) ? dt2 : dt1;
-                        dt22 = (dt1.CompareTo(dt2) >= 0) ? dt1 : dt2;
+                    case "M": //月   
+                        dt11 = dt1.CompareTo(dt2) >= 0 ? dt2 : dt1;
+                        dt22 = dt1.CompareTo(dt2) >= 0 ? dt1 : dt2;
                         interval = -1;
                         while (dt22.CompareTo(dt11) >= 0)
                         {
@@ -162,9 +160,9 @@ namespace Fissoft
                             dt11 = dt11.AddMonths(1);
                         }
                         break;
-                    case "y"://年   
-                        dt11 = (dt1.CompareTo(dt2) >= 0) ? dt2 : dt1;
-                        dt22 = (dt1.CompareTo(dt2) >= 0) ? dt1 : dt2;
+                    case "y": //年   
+                        dt11 = dt1.CompareTo(dt2) >= 0 ? dt2 : dt1;
+                        dt22 = dt1.CompareTo(dt2) >= 0 ? dt1 : dt2;
                         interval = -1;
                         while (dt22.CompareTo(dt11) >= 0)
                         {
@@ -178,10 +176,9 @@ namespace Fissoft
             }
             catch (Exception ex)
             {
-                string error = ex.Message;
+                var error = ex.Message;
                 return 0;
             }
         }
-
     }
 }

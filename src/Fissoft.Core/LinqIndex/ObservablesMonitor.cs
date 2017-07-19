@@ -6,7 +6,8 @@ namespace Fissoft.LinqIndex
 {
     public static class ObservablesMonitor
     {
-        public static void BeginObserving<TCollection, T>(TCollection observableCollection, IndexSpecification<T> indexSpecification)
+        public static void BeginObserving<TCollection, T>(TCollection observableCollection,
+            IndexSpecification<T> indexSpecification)
             where TCollection : class, INotifyCollectionChanged, IEnumerable<T>
         {
             InternalObservablesHook.Add(observableCollection, indexSpecification);

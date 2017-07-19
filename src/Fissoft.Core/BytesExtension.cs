@@ -2,7 +2,6 @@
  zou jian
  */
 
-using System;
 using System.Text;
 
 namespace Fissoft
@@ -23,14 +22,14 @@ namespace Fissoft
             return result;
         }
 
-        public static Int64 ToLong(this byte[] x)
+        public static long ToLong(this byte[] x)
         {
             return x.ToLong(0);
         }
 
-        public static Int32 ToInt(this byte[] x, int offset)
+        public static int ToInt(this byte[] x, int offset)
         {
-            int result = 0;
+            var result = 0;
             result |= x[offset + 0] << 24;
             result |= x[offset + 1] << 16;
             result |= x[offset + 2] << 8;
@@ -38,7 +37,7 @@ namespace Fissoft
             return result;
         }
 
-        public static Int32 ToInt(this byte[] x)
+        public static int ToInt(this byte[] x)
         {
             return x.ToInt(0);
         }
@@ -80,16 +79,12 @@ namespace Fissoft
         public static string ToHexStr(this byte[] data, bool isUpperCase = false)
         {
             if (data == null)
-            {
                 return null;
-            }
 
             var format = isUpperCase ? "{0:X2}" : "{0:x2}";
             var stringBuilder = new StringBuilder();
             foreach (var perByte in data)
-            {
                 stringBuilder.AppendFormat(format, perByte);
-            }
 
             return stringBuilder.ToString();
         }

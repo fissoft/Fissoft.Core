@@ -4,23 +4,25 @@ using Fissoft.LinqIndex.Internal;
 
 namespace Fissoft.LinqIndex.Indexes
 {
-
     internal class ObservableDictionaryHashIndex<T> : DictionaryHashIndex<T>
     {
         /// <summary>
-        /// local field to store single instance of the handler for speed purposes
+        ///     local field to store single instance of the handler for speed purposes
         /// </summary>
         private readonly PropertyChangedEventHandler _propertyChangedHandler;
 
         public ObservableDictionaryHashIndex(string propertyName, IEnumerable<T> items)
             : this(new IndexPropertySpecification(propertyName), items)
-        { }
+        {
+        }
 
         public ObservableDictionaryHashIndex(IndexPropertySpecification indexPropertySpecification)
             : this(indexPropertySpecification, new List<T>())
-        { }
+        {
+        }
 
-        public ObservableDictionaryHashIndex(IndexPropertySpecification indexPropertySpecification, IEnumerable<T> items)
+        public ObservableDictionaryHashIndex(IndexPropertySpecification indexPropertySpecification,
+            IEnumerable<T> items)
             : base(indexPropertySpecification, items)
         {
             _propertyChangedHandler = IndexableCollection_PropertyChanged;
@@ -42,16 +44,16 @@ namespace Fissoft.LinqIndex.Indexes
 
         private void WireNotifyPropertyChangeEvents(object item)
         {
-            ((INotifyPropertyChanged)item).PropertyChanged += _propertyChangedHandler;
+            ((INotifyPropertyChanged) item).PropertyChanged += _propertyChangedHandler;
         }
 
         private void UnWireNotifyPropertyChangeEvents(object item)
         {
-            ((INotifyPropertyChanged)item).PropertyChanged -= _propertyChangedHandler;
+            ((INotifyPropertyChanged) item).PropertyChanged -= _propertyChangedHandler;
         }
 
         /// <summary>
-        /// Adds an indexed property to the index after it has changed
+        ///     Adds an indexed property to the index after it has changed
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -60,9 +62,8 @@ namespace Fissoft.LinqIndex.Indexes
             if (!string.Equals(PropertyReader.PropertyName, e.PropertyName))
                 return;
 
-            RemoveFromIndex((T)sender);
-            AddToIndex((T)sender);
+            RemoveFromIndex((T) sender);
+            AddToIndex((T) sender);
         }
     }
-
 }

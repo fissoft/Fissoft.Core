@@ -15,9 +15,7 @@ namespace Fissoft
         public static string ToSHA1(this string dataStr)
         {
             if (dataStr == null)
-            {
                 return null;
-            }
 
             using (var sha1 = SHA1.Create())
             {
@@ -26,6 +24,5 @@ namespace Fissoft
                 return hashCode;
             }
         }
-
     }
 }
