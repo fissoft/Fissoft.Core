@@ -5,7 +5,7 @@ platform: Any CPU
 before_build:
 - ps: dotnet restore
 build:
-  publish_nuget: true
+  publish_nuget: false
   verbosity: minimal
 before_package:
 - ps: dotnet pack /p:Version="$env:APPVEYOR_BUILD_VERSION"
