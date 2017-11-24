@@ -7,6 +7,7 @@ using Fissoft.EntitySearch;
 using Fissoft.Framework.Systems.Common;
 using Fissoft.Transforms;
 using Fissoft.Utils;
+using System.Collections;
 
 namespace Fissoft.Framework.Systems.Data.EntitySearch
 {
@@ -170,22 +171,22 @@ namespace Fissoft.Framework.Systems.Data.EntitySearch
         public static Expression ChangeTypeToExpression(SearchItem item, Type conversionType)
         {
             if (item.Value == null) return Expression.Constant(item.Value, conversionType);
-
+            
             #region 数组
-
-            //if (item.Method == SearchMethod.StdIn)
-            if (item.Value is Array)
+            if (item.Value is IList && !(item.Value is IEnumerable<char>))
             {
-                var arr = item.Value as Array;
+                var arr = item.Value as IList;
+                
                 var expList = new List<Expression>();
                 //确保可用
-                if (arr != null)
-                    for (var i = 0; i < arr.Length; i++)
+                if (arr != null) {
+                    for (var i = 0; i < arr.Count; i++)
                     {
                         //构造数组的单元Constant
-                        var newValue = ChangeType(arr.GetValue(i), conversionType);
+                        var newValue = ChangeType(arr[i], conversionType);
                         expList.Add(Expression.Constant(newValue, conversionType));
                     }
+                }
                 //构造inType类型的数组表达式树，并为数组赋初值
                 return Expression.NewArrayInit(conversionType, expList);
             }

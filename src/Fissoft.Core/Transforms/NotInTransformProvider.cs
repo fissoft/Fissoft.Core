@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Fissoft.EntitySearch;
+using System.Linq;
 
 namespace Fissoft.Transforms
 {
@@ -16,9 +17,17 @@ namespace Fissoft.Transforms
             var arr = item.Value as Array;
             if (arr == null)
             {
-                var arrStr = item.Value.ToString();
-                if (!string.IsNullOrEmpty(arrStr))
-                    arr = arrStr.Split(',');
+                var list = item.Value as IList<int>;
+                if (list == null)
+                {
+                    var arrStr = item.Value.ToString();
+                    if (!string.IsNullOrEmpty(arrStr))
+                        arr = arrStr.Split(',');
+                }
+                else
+                {
+                    arr = list.ToArray();
+                }
             }
             return new[] {new SearchItem(item.Field, SearchMethod.StdNotIn, arr)};
         }

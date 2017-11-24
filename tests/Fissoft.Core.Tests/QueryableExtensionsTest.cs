@@ -263,7 +263,34 @@ namespace Fissoft.Core.Tests
             var actual = query.Where(item);
             Assert.AreEqual(1, actual.Count());
         }
+        [TestMethod]
+        public void NotInIntArray()
+        {
+            var item = new SearchItem
+            {
+                Field = "Id",
+                Method = SearchMethod.NotIn,
+                Value = new[] { 2, 3 }
+            };
+            var query = _table.AsQueryable();
 
+            var actual = query.Where(item);
+            Assert.AreEqual(1, actual.Count());
+        }
+        [TestMethod]
+        public void NotInIntList()
+        {
+            var item = new SearchItem
+            {
+                Field = "Id",
+                Method = SearchMethod.NotIn,
+                Value = new List<int>{ 2, 3 }
+            };
+            var query = _table.AsQueryable();
+
+            var actual = query.Where(item);
+            Assert.AreEqual(1, actual.Count());
+        }
         [TestMethod]
         public void InParamIsString()
         {
