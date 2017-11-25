@@ -22,28 +22,17 @@ namespace Fissoft.EntitySearch
 
         public SearchModel()
         {
-            PrivateInit(10);
+            //PrivateInit(10);
         }
 
         #endregion
 
-        #region 生成SQL及参数的方法
-
-        public List<object> ParamList { get; set; }
-
-        #endregion
-
-        public void PrivateInit(int pageSize)
-        {
-            if (Page == 0)
-                Page = 1;
-            if (Items == null)
-                Items = new List<SearchItem>();
-            if (ParamList == null)
-                ParamList = new List<object>();
-            PageSize = pageSize;
-        }
-
+        /// <summary>
+        /// 判断指定 Member 是否有查询条件
+        /// </summary>
+        /// <param name="memberName"></param>
+        /// <returns></returns>
+        [Obsolete]
         public bool HashSearchFilter(string memberName)
         {
             return Items.Where(m => m.Field.Equals(memberName, StringComparison.CurrentCultureIgnoreCase))
@@ -77,12 +66,12 @@ namespace Fissoft.EntitySearch
         /// <summary>
         ///     页码
         /// </summary>
-        public int Page { get; set; }
+        public int Page { get; set; } = 1;
 
         /// <summary>
         ///     每页条数
         /// </summary>
-        public int PageSize { get; set; }
+        public int PageSize { get; set; } = 10;
 
         /// <summary>
         ///     要排序的字段
@@ -97,7 +86,7 @@ namespace Fissoft.EntitySearch
         /// <summary>
         ///     查询条件
         /// </summary>
-        public List<SearchItem> Items { get; set; }
+        public List<SearchItem> Items { get; set; } = new List<SearchItem>();
 
         public SearchModel AddSearchItem(SearchItem item)
         {

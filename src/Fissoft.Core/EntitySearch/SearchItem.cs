@@ -200,18 +200,6 @@ namespace Fissoft.EntitySearch
             return false;
         }
 
-        public string ToUrlParamsString()
-        {
-            var strInsert = string.Empty;
-            if (!string.IsNullOrWhiteSpace(Prefix))
-                strInsert += string.Format("({0})", Prefix);
-            if (!string.IsNullOrWhiteSpace(OrGroup))
-                strInsert += string.Format("{{{0}}}", OrGroup);
-            if (Field != FilterId)
-                strInsert += string.Format("!{0}|", FilterId);
-            return string.Format("F[[{0}]{1}{2}]={3}", (int) Method, Field, strInsert, Value);
-        }
-
         private static List<int> GetInValue(object itemvalue)
         {
             if (itemvalue is int[])
