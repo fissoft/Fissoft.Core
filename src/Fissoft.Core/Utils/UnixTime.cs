@@ -5,7 +5,7 @@ namespace Fissoft.Utils
     public class UnixTime
     {
         private static DateTime _baseTime = new DateTime(1970, 1, 1);
-
+        static int EightHoursSeconds = 8 * 60 * 60;
         /// <summary>
         ///     将unixtime转换为.NET的DateTime
         /// </summary>
@@ -13,7 +13,7 @@ namespace Fissoft.Utils
         /// <returns>转换后的时间</returns>
         public static DateTime FromUnixTime(long timeStamp)
         {
-            return new DateTime((timeStamp + 8 * 60 * 60) * 10000000 + _baseTime.Ticks);
+            return new DateTime((timeStamp + EightHoursSeconds) * 10000000 + _baseTime.Ticks);
             //return BaseTime.AddSeconds(timeStamp);
             //return new DateTime(1970, 1, 1, 0, 0, 0).AddSeconds(timeStamp);
         }
@@ -25,7 +25,7 @@ namespace Fissoft.Utils
         /// <returns>转换后的unix time</returns>
         public static long FromDateTime(DateTime dateTime)
         {
-            return (dateTime.Ticks - _baseTime.Ticks) / 10000000 - 8 * 60 * 60;
+            return (dateTime.Ticks - _baseTime.Ticks) / 10000000 - EightHoursSeconds;
             //return (dateTime.Ticks - new DateTime(1970, 1, 1, 0, 0, 0).Ticks) / 10000000;
         }
 
