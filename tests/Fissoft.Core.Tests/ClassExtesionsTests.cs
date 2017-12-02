@@ -10,7 +10,9 @@ namespace Fissoft.Core.Tests
         public void GetPropertyTest()
         {
             TestModel model = null;
+            // ReSharper disable once ExpressionIsAlwaysNull
             Assert.AreEqual(default(string), model.GetProperty(c => c.Name));
+            // ReSharper disable once ExpressionIsAlwaysNull
             Assert.AreEqual(default(int), model.GetProperty(c => c.Id));
             model = new TestModel
             {
