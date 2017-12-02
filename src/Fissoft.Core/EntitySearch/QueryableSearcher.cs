@@ -1,15 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Fissoft.EntitySearch;
-using Fissoft.Framework.Systems.Common;
+using Fissoft.Internal;
 using Fissoft.Transforms;
 using Fissoft.Utils;
-using System.Collections;
 
-namespace Fissoft.Framework.Systems.Data.EntitySearch
+namespace Fissoft.EntitySearch
 {
     internal class QueryableSearcher<T>
     {
@@ -77,11 +76,12 @@ namespace Fissoft.Framework.Systems.Data.EntitySearch
         {
             var list = new List<Expression>();
             //先处理无OrGroup的数据并使用And逻辑拼接
-            var andList = items.Where(c => string.IsNullOrEmpty(c.OrGroup));
-            if (andList.Count() != 0)
+            var searchItems = items as SearchItem[] ?? items.ToArray();
+            var andList = searchItems.Where(c => string.IsNullOrEmpty(c.OrGroup)).ToArray();
+            if (andList.Length != 0)
                 list.Add(GetGroupExpression(param, andList, Expression.AndAlso));
             //处理有OrGroup的条件，并按OrGroup分组后使用OR拼接
-            var orGroupByList = items.Where(c => !string.IsNullOrEmpty(c.OrGroup)).GroupBy(c => c.OrGroup);
+            var orGroupByList = searchItems.Where(c => !string.IsNullOrEmpty(c.OrGroup)).GroupBy(c => c.OrGroup);
             foreach (var group in orGroupByList)
                 if (group.Count() != 0)
                     list.Add(GetGroupExpression(param, group, Expression.OrElse));
@@ -173,19 +173,14 @@ namespace Fissoft.Framework.Systems.Data.EntitySearch
             if (item.Value == null) return Expression.Constant(item.Value, conversionType);
             
             #region 数组
-            if (item.Value is IList && !(item.Value is IEnumerable<char>))
+            if (item.Value is IList arr && !(arr is IEnumerable<char>))
             {
-                var arr = item.Value as IList;
-                
                 var expList = new List<Expression>();
-                //确保可用
-                if (arr != null) {
-                    for (var i = 0; i < arr.Count; i++)
-                    {
-                        //构造数组的单元Constant
-                        var newValue = ChangeType(arr[i], conversionType);
-                        expList.Add(Expression.Constant(newValue, conversionType));
-                    }
+                for (var i = 0; i < arr.Count; i++)
+                {
+                    //构造数组的单元Constant
+                    var newValue = ChangeType(arr[i], conversionType);
+                    expList.Add(Expression.Constant(newValue, conversionType));
                 }
                 //构造inType类型的数组表达式树，并为数组赋初值
                 return Expression.NewArrayInit(conversionType, expList);
@@ -335,9 +330,8 @@ namespace Fissoft.Framework.Systems.Data.EntitySearch
                     SearchMethod.IsNull,
                     (left, right) =>
                     {
-                        if (right is ConstantExpression)
+                        if (right is ConstantExpression rightCon)
                         {
-                            var rightCon = right as ConstantExpression;
                             var rightConValue = rightCon.Value == null ? string.Empty : rightCon.Value.ToString();
                             if (rightConValue == "True" || rightConValue == "true" || rightConValue == "1")
                                 return Expression.Equal(left, Expression.Constant(null));
@@ -356,9 +350,8 @@ namespace Fissoft.Framework.Systems.Data.EntitySearch
                     SearchMethod.IsNullOrEmpty,
                     (left, right) =>
                     {
-                        if (right is ConstantExpression)
+                        if (right is ConstantExpression rightCon)
                         {
-                            var rightCon = right as ConstantExpression;
                             var rightConValue = rightCon.Value == null ? string.Empty : rightCon.Value.ToString();
                             if (rightConValue == "True" || rightConValue == "true" || rightConValue == "1")
                                 return Expression.Or(Expression.Equal(left, Expression.Constant(null)),

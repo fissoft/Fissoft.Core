@@ -171,7 +171,6 @@ namespace Fissoft.LinqIndex
         )
         {
             //our indexes work from the hash values of that which is indexed, regardless of type
-            int? hashRight;
             var noIndex = true;
 
             //indexes only work on equality expressions here
@@ -183,7 +182,7 @@ namespace Fissoft.LinqIndex
                 var leftSide = binExp.Left;
                 var rightSide = binExp.Right;
 
-                hashRight = GetHashRight(leftSide, rightSide);
+                var hashRight = GetHashRight(leftSide, rightSide);
 
                 //if we were able to create a hash from the right side (likely)
                 MemberExpression returnedEx;

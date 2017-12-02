@@ -29,8 +29,8 @@ namespace Fissoft
             var memInfo = type.GetTypeInfo().GetMember(e.ToString());
             if (memInfo.Length > 0)
             {
-                var attrs = memInfo[0].GetCustomAttributes(typeof(GlobalCodeAttribute), false);
-                if (attrs.Count() > 0)
+                var attrs = memInfo[0].GetCustomAttributes(typeof(GlobalCodeAttribute), false).ToArray();
+                if (attrs.Any())
                     return (GlobalCodeAttribute) attrs.FirstOrDefault();
             }
             return null;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 
-namespace Fissoft.Framework.Systems.Common
+namespace Fissoft.Internal
 {
     /// <summary>
     ///     GetProperty反射操作缓存

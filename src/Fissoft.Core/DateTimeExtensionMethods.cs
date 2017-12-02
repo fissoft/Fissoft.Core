@@ -174,9 +174,8 @@ namespace Fissoft
                 }
                 return interval;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                var error = ex.Message;
                 return 0;
             }
         }

@@ -1,4 +1,4 @@
-namespace Fissoft.Framework.Systems.Data.EntitySearch
+namespace Fissoft.EntitySearch
 {
     internal enum QueryProviderType
     {

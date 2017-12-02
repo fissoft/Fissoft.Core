@@ -4,8 +4,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Linq.Expressions;
 using Fissoft.EntitySearch;
-using Fissoft.Framework.Systems.Common;
-using Fissoft.Framework.Systems.Data.EntitySearch;
+using Fissoft.Internal;
 
 namespace Fissoft
 {
@@ -49,7 +48,7 @@ namespace Fissoft
 
             for (var k = 0; k < propGroup.Length; k++)
             {
-                var typeOfProp = typeof(T);
+                Type typeOfProp;
                 var sortField = propGroup[k];
                 var currentOrder = GetOrderMethod(sortOrder, k);
                 var param = Expression.Parameter(typeof(T), "o");
@@ -79,27 +78,27 @@ namespace Fissoft
 
         private static string GetOrderMethod(string sortOrder, int index)
         {
-            const string ASC = "OrderBy";
-            const string DESC = "OrderByDescending";
-            const string THENASC = "ThenBy";
-            const string THENDESC = "ThenByDescending";
-            string AscVar, DescVar;
+            const string asc = "OrderBy";
+            const string desc = "OrderByDescending";
+            const string thenasc = "ThenBy";
+            const string thendesc = "ThenByDescending";
+            string ascVar, descVar;
             if (index == 0)
             {
-                AscVar = ASC;
-                DescVar = DESC;
+                ascVar = asc;
+                descVar = desc;
             }
             else
             {
-                AscVar = THENASC;
-                DescVar = THENDESC;
+                ascVar = thenasc;
+                descVar = thendesc;
             }
 
-            if (string.IsNullOrEmpty(sortOrder)) return AscVar;
+            if (string.IsNullOrEmpty(sortOrder)) return ascVar;
             var orderArr = sortOrder.Split(',');
-            if (index >= orderArr.Length) return AscVar;
-            if (orderArr[index].ToLower() == "desc") return DescVar;
-            return AscVar;
+            if (index >= orderArr.Length) return ascVar;
+            if (orderArr[index].ToLower() == "desc") return descVar;
+            return ascVar;
         }
 
         #endregion
@@ -129,10 +128,11 @@ namespace Fissoft
             if (null == values)
                 throw new ArgumentNullException("values");
             var p = valueSelector.Parameters.Single();
-            if (!values.Any()) return e => false;
+            var enumerable = values as TValue[] ?? values.ToArray();
+            if (!enumerable.Any()) return e => false;
 
             var equals =
-                values.Select(value => (Expression) Expression.Equal(valueSelector.Body,
+                enumerable.Select(value => (Expression) Expression.Equal(valueSelector.Body,
                     Expression.Constant(value, typeof(TValue))));
             var body = equals.Aggregate(Expression.Or);
             return Expression.Lambda<Func<TElement, bool>>(body, p);

@@ -18,14 +18,6 @@ namespace Fissoft.EntitySearch
     /// </summary>
     public class SearchModel
     {
-        #region Ctor
-
-        public SearchModel()
-        {
-            //PrivateInit(10);
-        }
-
-        #endregion
 
         /// <summary>
         /// 判断指定 Member 是否有查询条件
@@ -35,8 +27,8 @@ namespace Fissoft.EntitySearch
         [Obsolete]
         public bool HashSearchFilter(string memberName)
         {
-            return Items.Where(m => m.Field.Equals(memberName, StringComparison.CurrentCultureIgnoreCase))
-                       .FirstOrDefault() != null;
+            return Items
+                       .FirstOrDefault(m => m.Field.Equals(memberName, StringComparison.CurrentCultureIgnoreCase)) != null;
         }
 
 

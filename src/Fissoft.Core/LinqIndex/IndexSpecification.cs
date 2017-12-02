@@ -37,7 +37,7 @@ namespace Fissoft.LinqIndex
         private IndexSpecification<T> Add(IndexPropertySpecification propertySpecification)
         {
             // Should only add property once
-            if (!IndexedPropertiesConfiguration.Any(i => i == propertySpecification))
+            if (IndexedPropertiesConfiguration.All(i => i != propertySpecification))
                 IndexedPropertiesConfiguration.Add(propertySpecification);
 
             return this;
@@ -48,8 +48,7 @@ namespace Fissoft.LinqIndex
             var propertyName = propertyExpressions.GetMemberName();
 
             var itemToRemove = IndexedPropertiesConfiguration
-                .Where(w => w.PropertyName.Equals(propertyName))
-                .FirstOrDefault();
+                .FirstOrDefault(w => w.PropertyName.Equals(propertyName));
 
             if (itemToRemove != null)
                 IndexedPropertiesConfiguration.Remove(itemToRemove);

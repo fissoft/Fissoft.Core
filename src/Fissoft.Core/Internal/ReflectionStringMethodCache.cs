@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Fissoft.Framework.Systems.Common
+namespace Fissoft.Internal
 {
     internal class ReflectionStringMethodCache
     {

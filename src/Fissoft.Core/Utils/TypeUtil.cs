@@ -25,7 +25,7 @@ namespace Fissoft.Utils
         public static Type GetUnNullableType(Type conversionType)
         {
             if (conversionType.GetTypeInfo().IsGenericType &&
-                conversionType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+                conversionType.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 //如果是泛型方法，且泛型类型为Nullable<>则视为可空类型
                 //并使用NullableConverter转换器进行转换
