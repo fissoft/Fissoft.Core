@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
-
+// ReSharper disable InconsistentlySynchronizedField
+// ReSharper disable StaticMemberInGenericType
 namespace Fissoft.Internal
 {
     /// <summary>

@@ -176,10 +176,10 @@ namespace Fissoft.EntitySearch
             if (item.Value is IList arr && !(arr is IEnumerable<char>))
             {
                 var expList = new List<Expression>();
-                for (var i = 0; i < arr.Count; i++)
+                foreach (object val in arr)
                 {
-                    //构造数组的单元Constant
-                    var newValue = ChangeType(arr[i], conversionType);
+//构造数组的单元Constant
+                    var newValue = ChangeType(val, conversionType);
                     expList.Add(Expression.Constant(newValue, conversionType));
                 }
                 //构造inType类型的数组表达式树，并为数组赋初值
@@ -189,12 +189,9 @@ namespace Fissoft.EntitySearch
             #endregion
 
             var elementType = TypeUtil.GetUnNullableType(conversionType);
-            object value;
-            if (elementType.GetTypeInfo().BaseType == typeof(Enum))
-                value = Enum.Parse(elementType, item.Value.ToString());
-            else
-                value =
-                    Convert.ChangeType(item.Value, elementType);
+            var value = elementType.GetTypeInfo().BaseType == typeof(Enum) ?
+                Enum.Parse(elementType, item.Value.ToString()) :
+                Convert.ChangeType(item.Value, elementType);
             return Expression.Constant(value, conversionType);
         }
 
@@ -232,23 +229,23 @@ namespace Fissoft.EntitySearch
             {
                 {
                     SearchMethod.Equal,
-                    (left, right) => { return Expression.Equal(left, right); }
+                    Expression.Equal
                 },
                 {
                     SearchMethod.GreaterThan,
-                    (left, right) => { return Expression.GreaterThan(left, right); }
+                    Expression.GreaterThan
                 },
                 {
                     SearchMethod.GreaterThanOrEqual,
-                    (left, right) => { return Expression.GreaterThanOrEqual(left, right); }
+                    Expression.GreaterThanOrEqual
                 },
                 {
                     SearchMethod.LessThan,
-                    (left, right) => { return Expression.LessThan(left, right); }
+                    Expression.LessThan
                 },
                 {
                     SearchMethod.LessThanOrEqual,
-                    (left, right) => { return Expression.LessThanOrEqual(left, right); }
+                    Expression.LessThanOrEqual
                 },
                 {
                     SearchMethod.Contains,
@@ -304,7 +301,7 @@ namespace Fissoft.EntitySearch
                 },
                 {
                     SearchMethod.NotEqual,
-                    (left, right) => { return Expression.NotEqual(left, right); }
+                    Expression.NotEqual
                 },
                 {
                     SearchMethod.StartsWith,
@@ -324,14 +321,15 @@ namespace Fissoft.EntitySearch
                 },
                 {
                     SearchMethod.DateTimeLessThanOrEqual,
-                    (left, right) => { return Expression.LessThanOrEqual(left, right); }
+                    Expression.LessThanOrEqual
                 },
                 {
                     SearchMethod.IsNull,
                     (left, right) =>
                     {
-                        if (right is ConstantExpression rightCon)
+                        if (right is ConstantExpression)
                         {
+                            var rightCon = right as ConstantExpression;
                             var rightConValue = rightCon.Value == null ? string.Empty : rightCon.Value.ToString();
                             if (rightConValue == "True" || rightConValue == "true" || rightConValue == "1")
                                 return Expression.Equal(left, Expression.Constant(null));
@@ -350,8 +348,9 @@ namespace Fissoft.EntitySearch
                     SearchMethod.IsNullOrEmpty,
                     (left, right) =>
                     {
-                        if (right is ConstantExpression rightCon)
+                        if (right is ConstantExpression )
                         {
+                            var rightCon = right as ConstantExpression;
                             var rightConValue = rightCon.Value == null ? string.Empty : rightCon.Value.ToString();
                             if (rightConValue == "True" || rightConValue == "true" || rightConValue == "1")
                                 return Expression.Or(Expression.Equal(left, Expression.Constant(null)),

@@ -208,7 +208,8 @@ namespace Fissoft.EntitySearch
                 return itemvalue as List<int>;
 
             var desValue = itemvalue.ToString()
-                .Split(new[] {',', ' ', '|', '\t'}, StringSplitOptions.RemoveEmptyEntries).Select(m => int.Parse(m))
+                .Split(new[] {',', ' ', '|', '\t'}, StringSplitOptions.RemoveEmptyEntries)
+                .Select(int.Parse)
                 .ToList();
             return desValue;
         }
