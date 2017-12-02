@@ -17,8 +17,7 @@ namespace Fissoft.Transforms
             var arr = item.Value as Array;
             if (arr == null)
             {
-                var list = item.Value as IList<int>;
-                if (list == null)
+                if (!(item.Value is IList<int> list))
                 {
                     var arrStr = item.Value.ToString();
                     if (!string.IsNullOrEmpty(arrStr))

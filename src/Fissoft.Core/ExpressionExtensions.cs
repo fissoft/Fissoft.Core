@@ -10,8 +10,7 @@ namespace Fissoft
     {
         public static Expression RemoveUnary(this Expression body)
         {
-            var uniary = body as UnaryExpression;
-            return uniary != null ? uniary.Operand : body;
+            return body is UnaryExpression uniary ? uniary.Operand : body;
         }
     }
 }

@@ -22,14 +22,8 @@ namespace Fissoft.LinqIndex.Internal
 
         public ObservableIndexableCollection(TCollection items, IndexSpecification<T> indexSpecification)
         {
-            if (items == null)
-                throw new ArgumentNullException("items");
-
-            if (indexSpecification == null)
-                throw new ArgumentNullException("indexSpecification");
-
-            _items = items;
-            _indexSpecification = indexSpecification;
+            _items = items ?? throw new ArgumentNullException(nameof(items));
+            _indexSpecification = indexSpecification ?? throw new ArgumentNullException(nameof(indexSpecification));
 
             _internalIndexableCollection = new IndexableCollection<T>(items, indexSpecification);
 

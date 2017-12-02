@@ -11,6 +11,7 @@ namespace Fissoft
     /// <summary>
     ///     Linq IQueryable 扩展
     /// </summary>
+    // ReSharper disable once InconsistentNaming
     public static class IQueryableExtensions
     {
         #region Obsolete
@@ -124,9 +125,9 @@ namespace Fissoft
             Expression<Func<TElement, TValue>> valueSelector, IEnumerable<TValue> values)
         {
             if (null == valueSelector)
-                throw new ArgumentNullException("valueSelector");
+                throw new ArgumentNullException(nameof(valueSelector));
             if (null == values)
-                throw new ArgumentNullException("values");
+                throw new ArgumentNullException(nameof(values));
             var p = valueSelector.Parameters.Single();
             var enumerable = values as TValue[] ?? values.ToArray();
             if (!enumerable.Any()) return e => false;

@@ -11,7 +11,7 @@ namespace Fissoft.LinqIndex.Internal
         public static LateBoundProperty Create<T>(PropertyInfo property)
         {
             if (property == null)
-                throw new ArgumentNullException("property");
+                throw new ArgumentNullException(nameof(property));
 
             var method = typeof(T).GetTypeInfo().GetMethod("get_" + property.Name, Type.EmptyTypes);
 

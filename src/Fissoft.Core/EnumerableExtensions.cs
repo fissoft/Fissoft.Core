@@ -23,7 +23,7 @@ namespace Fissoft
         /// <returns></returns>
         public static List<T> ToNotNull<T>(this IEnumerable<T> ie)
         {
-            return ie != null ? ie.ToList() : new List<T>();
+            return ie?.ToList() ?? new List<T>();
         }
 
         /// <summary>
@@ -34,8 +34,7 @@ namespace Fissoft
         /// <returns></returns>
         public static ReadOnlyCollection<T> ToReadOnlyCollection<T>(this IEnumerable<T> source)
         {
-            var readOnlyCollection = source as ReadOnlyCollection<T>;
-            if (readOnlyCollection != null)
+            if (source is ReadOnlyCollection<T> readOnlyCollection)
                 return readOnlyCollection;
             return new ReadOnlyCollection<T>(source.ToList());
         }
@@ -216,8 +215,8 @@ namespace Fissoft
         public static IEnumerable<T> Where<T>(this IEnumerable<T> source, SearchItem searchItem)
         {
             var info = typeof(T).GetTypeInfo().GetProperty(searchItem.Field);
-            Func<T, bool> func = delegate(T m) { return searchItem.IsMatch(info.GetValue(m, null)); };
-            return source.Where(func);
+            bool Func(T m) => searchItem.IsMatch(info.GetValue(m, null));
+            return source.Where(Func);
         }
 
         public static IEnumerable<T> Where<T>(this IEnumerable<T> source, SearchModel searchModel)
@@ -231,11 +230,11 @@ namespace Fissoft
             return source;
         }
 
-        public static Func<T, Tkey> MehodLambda<T, Tkey>(string propertyName)
+        public static Func<T, TKey> MehodLambda<T, TKey>(string propertyName)
         {
             var p = Expression.Parameter(typeof(T), "p");
             Expression body = Expression.Property(p, typeof(T).GetTypeInfo().GetProperty(propertyName));
-            var lambda = Expression.Lambda<Func<T, Tkey>>(body, p);
+            var lambda = Expression.Lambda<Func<T, TKey>>(body, p);
             return lambda.Compile();
         }
 

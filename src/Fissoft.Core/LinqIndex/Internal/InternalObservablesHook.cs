@@ -24,9 +24,7 @@ namespace Fissoft.LinqIndex.Internal
         public static bool TryGetIndexForObservable<T>(object collection,
             out IIndexableCollection<T> indexableCollection)
         {
-            object o;
-
-            if (ItemsMonitoring.TryGetValue(collection, out o))
+            if (ItemsMonitoring.TryGetValue(collection, out var o))
             {
                 indexableCollection = (IIndexableCollection<T>) o;
 

@@ -38,10 +38,10 @@ namespace Fissoft.LinqIndex
         public IndexableCollection(IEnumerable<T> items, IndexSpecification<T> indexSpecification)
         {
             if (items == null)
-                throw new ArgumentNullException("items");
+                throw new ArgumentNullException(nameof(items));
 
             if (indexSpecification == null)
-                throw new ArgumentNullException("indexSpecification");
+                throw new ArgumentNullException(nameof(indexSpecification));
 
             UseIndexSpecification(indexSpecification);
 
@@ -124,7 +124,7 @@ namespace Fissoft.LinqIndex
         public IndexableCollection<T> UseIndexSpecification(IndexSpecification<T> indexSpecification)
         {
             if (indexSpecification == null)
-                throw new ArgumentNullException("indexSpecification");
+                throw new ArgumentNullException(nameof(indexSpecification));
 
             _indexs.Clear();
 

@@ -7,6 +7,7 @@ using System.Reflection;
 using Fissoft.Internal;
 using Fissoft.Transforms;
 using Fissoft.Utils;
+// ReSharper disable StaticMemberInGenericType
 
 namespace Fissoft.EntitySearch
 {
@@ -130,6 +131,7 @@ namespace Fissoft.EntitySearch
         {
             var props = item.Field.Split('.');
             Expression propertyAccess = param;
+            // ReSharper disable once NotAccessedVariable
             var typeOfProp = typeof(T);
             //由于属性可能是多层，所以提供了  Prop.Prop1.Prop2这样的功能，来进行多层查询
             var i = 0;
@@ -141,6 +143,7 @@ namespace Fissoft.EntitySearch
                         string.Format("{0}中的属性{1}不存在，所以不能用于查询，请检查查询条件",
                             typeof(T), props[i]
                         ));
+                // ReSharper disable once RedundantAssignment
                 typeOfProp = property.PropertyType;
                 propertyAccess = Expression.MakeMemberAccess(propertyAccess, property);
                 i++;

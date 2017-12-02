@@ -12,7 +12,7 @@ namespace Fissoft
         public static PagedList<T> Pager<T>(this IQueryable<T> source, int currentPage, int pageSize)
         {
             if (currentPage < 1)
-                throw new ArgumentOutOfRangeException("currentPage",
+                throw new ArgumentOutOfRangeException(nameof(currentPage),
                     @"当前参数currentPage必须>=1.");
             return new PagedList<T>(source, currentPage, pageSize);
         }
@@ -25,7 +25,7 @@ namespace Fissoft
         public static PagedList<T> Pager<T>(this IEnumerable<T> source, int currentPage, int pageSize)
         {
             if (currentPage < 1)
-                throw new ArgumentOutOfRangeException("currentPage",
+                throw new ArgumentOutOfRangeException(nameof(currentPage),
                     @"当前参数currentPage必须>=1.");
             return new PagedList<T>(source, currentPage, pageSize);
         }

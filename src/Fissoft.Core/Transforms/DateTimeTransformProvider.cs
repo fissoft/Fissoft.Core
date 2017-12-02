@@ -19,8 +19,7 @@ namespace Fissoft.Transforms
 
         public IEnumerable<SearchItem> Transform(SearchItem item, Type type)
         {
-            DateTime willTime;
-            DateTime.TryParse(item.Value.ToString(), out willTime);
+            DateTime.TryParse(item.Value.ToString(), out var willTime);
             if (willTime.Hour == 0 && willTime.Minute == 0 && willTime.Second == 0)
                 willTime = willTime.AddDays(1).AddMilliseconds(-1);
             return new[] {new SearchItem(item.Field, SearchMethod.LessThanOrEqual, willTime)};

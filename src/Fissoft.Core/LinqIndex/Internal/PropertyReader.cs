@@ -12,7 +12,7 @@ namespace Fissoft.LinqIndex.Internal
         public PropertyReader(IndexPropertySpecification indexPropertySpecification)
         {
             if (indexPropertySpecification == null)
-                throw new ArgumentNullException("indexPropertySpecification");
+                throw new ArgumentNullException(nameof(indexPropertySpecification));
 
             _propertyReadStrategy = indexPropertySpecification.PropertyReadStrategy;
 

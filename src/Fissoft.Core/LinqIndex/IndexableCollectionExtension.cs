@@ -73,9 +73,8 @@ namespace Fissoft.LinqIndex
                     foreach (var outerKey in outerIndex.Keys)
                     {
                         var outerGroup = outerIndex.ItemsWithKey(outerKey);
-                        List<TInner> innerGroup;
                         //List<TInner> innerGroup = innerIndex.ItemsWithKey(outerKey);
-                        if (innerIndex.TryGetItemsForKey(outerKey, out innerGroup))
+                        if (innerIndex.TryGetItemsForKey(outerKey, out var innerGroup))
                             //if (innerGroup.Count > 0)
                         {
                             var innerEnum = innerGroup.AsEnumerable();
@@ -185,8 +184,7 @@ namespace Fissoft.LinqIndex
                 var hashRight = GetHashRight(leftSide, rightSide);
 
                 //if we were able to create a hash from the right side (likely)
-                MemberExpression returnedEx;
-                if (hashRight.HasValue && HasIndexablePropertyOnLeft(leftSide, sourceCollection, out returnedEx))
+                if (hashRight.HasValue && HasIndexablePropertyOnLeft(leftSide, sourceCollection, out var returnedEx))
                 {
                     //cast to MemberExpression - it allows us to get the property
                     var property = returnedEx.Member.Name;
@@ -215,8 +213,7 @@ namespace Fissoft.LinqIndex
             Expression<Func<T, bool>> predicate)
             where TCollection : class, INotifyPropertyChanged, IEnumerable<T>
         {
-            IIndexableCollection<T> observableIndexFound;
-            if (InternalObservablesHook.TryGetIndexForObservable(sourceCollection, out observableIndexFound))
+            if (InternalObservablesHook.TryGetIndexForObservable(sourceCollection, out IIndexableCollection<T> observableIndexFound))
                 return observableIndexFound.Where(predicate);
 
             return sourceCollection.Where(predicate.Compile());
@@ -224,8 +221,7 @@ namespace Fissoft.LinqIndex
 
         public static IIndexableCollection<T> AsObservable<T>(this IEnumerable<T> sourceCollection)
         {
-            IIndexableCollection<T> observableIndexFound;
-            if (InternalObservablesHook.TryGetIndexForObservable(sourceCollection, out observableIndexFound))
+            if (InternalObservablesHook.TryGetIndexForObservable(sourceCollection, out IIndexableCollection<T> observableIndexFound))
                 return observableIndexFound;
 
             throw new ObservableIndexNotFoundException(

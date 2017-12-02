@@ -26,10 +26,10 @@ namespace Fissoft.LinqIndex.Indexes
         public DictionaryHashIndex(IndexPropertySpecification indexPropertySpecification, IEnumerable<T> items)
         {
             if (indexPropertySpecification == null)
-                throw new ArgumentNullException("indexPropertySpecification");
+                throw new ArgumentNullException(nameof(indexPropertySpecification));
 
             if (items == null)
-                throw new ArgumentNullException("items");
+                throw new ArgumentNullException(nameof(items));
 
             PropertyReader = new PropertyReader<T>(indexPropertySpecification);
 
@@ -74,9 +74,7 @@ namespace Fissoft.LinqIndex.Indexes
         {
             var hashCode = PropertyReader.GetItemHashCode(item);
 
-            List<T> newItemsIndex;
-
-            if (IndexItems.TryGetValue(hashCode, out newItemsIndex))
+            if (IndexItems.TryGetValue(hashCode, out var newItemsIndex))
                 newItemsIndex.Add(item);
             else
                 IndexItems.Add(hashCode, new List<T> {item});
@@ -92,18 +90,15 @@ namespace Fissoft.LinqIndex.Indexes
 
         private void RemoveFromIndexInternal(T item)
         {
-            int foundHashCode;
-            if (WhichIndexIsTIn.TryGetValue(item, out foundHashCode))
-            {
-                var convertedIndexFound = IndexItems[foundHashCode];
+            if (!WhichIndexIsTIn.TryGetValue(item, out var foundHashCode)) return;
+            var convertedIndexFound = IndexItems[foundHashCode];
 
-                convertedIndexFound.Remove(item);
+            convertedIndexFound.Remove(item);
 
-                if (convertedIndexFound.Count != 0)
-                    return;
+            if (convertedIndexFound.Count != 0)
+                return;
 
-                IndexItems.Remove(foundHashCode);
-            }
+            IndexItems.Remove(foundHashCode);
         }
     }
 }
